@@ -1,49 +1,28 @@
-====== Portal Dokumentasi Praktikum Komunikasi Data dan Jaringan Komputer (KDJK) ======
+====== Pusat Dokumentasi Laboratorium Komunikasi Data & Jaringan Komputer ======
 
-Portal ini memuat dokumentasi teknis, prosedur konfigurasi jaringan, serta panduan praktikum untuk mata kuliah **Komunikasi Data dan Jaringan Komputer (KDJK)**, Departemen Ilmu Komputer - IPB University.
+Selamat datang di **Knowledge Base Lab Komunikasi Data (Komdat)** Departemen Ilmu Komputer - IPB University. Dokumentasi ini dibangun menggunakan sistem wiki open source berbasis flat-file, yaitu **DokuWiki**.
 
-Seluruh dokumentasi dikelola secara mandiri (*self-hosted*) menggunakan DokuWiki berbasis penyimpanan berkas teks (*flat-file*).
+===== Daftar Modul Praktikum =====
 
-===== Navigasi Modul Praktikum =====
+  * [[:komdat:topologi|Modul 1: Desain Topologi & Subnetting IPv4/IPv6]]
+  * [[:komdat:routing|Modul 2: Konfigurasi Routing Statik & Dinamik (OSPF/RIP)]]
+  * [[:komdat:layanan|Modul 3: Konfigurasi Layanan Jaringan (DNS, DHCP, Web Server)]]
+  * [[:komdat:keamanan|Modul 4: Network Security, Firewall (UFW/iptables), & SSH Hardening]]
 
-Daftar materi dan modul praktikum dikelompokkan ke dalam beberapa topik utama:
+===== Karakteristik Arsitektur DokuWiki =====
 
-==== 1. Infrastruktur Dasar & Pengalamatan ====
-  * [[:kdjk:subnetting|Perancangan Subnetting IPv4 & IPv6]]: Perhitungan CIDR, VLSM (*Variable Length Subnet Mask*), dan alokasi blok IP laboratorium.
-  * [[:kdjk:switching|Konfigurasi Switching & VLAN]]: Segmentasi jaringan lokal, mode access/trunk (IEEE 802.1Q), dan inter-VLAN routing.
+Wiki engine ini dipilih karena keunggulan arsitekturalnya:
+  * **Tanpa Basis Data SQL (Flat-File Engine):** Seluruh konten, revisi, dan metadata disimpan dalam berkas teks biasa (plain text), sehingga sangat hemat memori (RAM < 64 MB).
+  * **Kemudahan Portabilitas & Backup:** Pencadangan data (*backup*) semudah menyalin direktori ''data/'' dan ''conf/''.
+  * **Kontrol Akses Terperinci (ACL):** Mendukung pemisahan hak akses antara pengelola lab (admin), asisten praktikum (editor), dan mahasiswa (viewer).
+  * **Pencarian Cepat:** Memiliki mesin indeks pencarian internal berbasis teks tanpa memerlukan Elasticsearch atau MySQL Fulltext.
 
-==== 2. Protokol Routing ====
-  * [[:kdjk:routing_statik|Routing Statik]]: Penentuan rute manual (*next-hop*) dan konfigurasi default gateway.
-  * [[:kdjk:routing_dinamik|Routing Dinamik (OSPF & RIP)]]: Pembentukan tabel routing otomatis, konfigurasi *Area 0* OSPF, dan propagasi rute.
+===== Kelompok 10 =====
 
-==== 3. Layanan Jaringan (Network Services) ====
-  * [[:kdjk:layanan_dns|Domain Name System (BIND9)]]: Pemetaan domain internal, konfigurasi zona *forward* dan *reverse lookup*.
-  * [[:kdjk:layanan_dhcp|Dynamic Host Configuration Protocol]]: Distribusi IP otomatis pada subnet klien praktikum.
-  * [[:kdjk:layanan_web|Web Server (Apache/Nginx)]]: Deployment layanan web berbasis Linux dan konfigurasi VirtualHost.
+Nama : 
+Naufal Indra Rizky - M0403241171
+Nawra Ghaya Tsabita - M0403241173
+Muhammad Farhan Assafari - M0403241176
+Muhammad Aulia Alfarisi - M0403241193
 
-==== 4. Keamanan Jaringan ====
-  * [[:kdjk:firewall|Firewall & Packet Filtering]]: Pengaturan aturan *iptables* dan *UFW* (Uncomplicated Firewall).
-  * [[:kdjk:hardening|SSH Hardening]]: Otentikasi berbasis pasangan kunci publik/privat (*public-key authentication*) dan pengubahan port default.
-
-===== Lingkungan Pengujian Lab =====
-
-Berikut adalah spesifikasi lingkungan server yang digunakan untuk menjalankan layanan dokumentasi ini:
-
-^ Parameter ^ Konfigurasi ^
-| Sistem Operasi | Ubuntu Server 22.04 LTS (Virtual Machine) |
-| Platform Deployment | Dokploy (Docker Engine) |
-| Runtime Web | PHP 8.x + Web Server |
-| Metode Penyimpanan | Flat-file Engine (tanpa database relasional SQL) |
-| Alamat IP VM | 43.173.15.121 |
-
-===== Informasi Kelompok =====
-
-Dokumentasi ini disusun dan dipelihara oleh **Kelompok 10**:
-
-^ No ^ Nama Anggota ^ NIM ^
-| 1 | Naufal Indra Rizky | M0403241171 |
-| 2 | Nawra Ghaya Tsabita | M0403241173 |
-| 3 | Muhammad Farhan Assafari | M0403241176 |
-| 4 | Muhammad Aulia Alfarisi | M0403241193 |
-
-Halaman ini terakhir diperbarui untuk keperluan praktikum dan evaluasi Proyek KDJK.
+Dokumentasi ini disusun untuk memenuhi tugas Proyek KDJK

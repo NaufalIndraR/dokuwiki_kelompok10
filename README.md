@@ -16,6 +16,18 @@
   <img src="https://img.shields.io/badge/Storage-Flat--File%20(No%20SQL)-green.svg?style=flat-square" alt="Flat File">
 </p>
 
+<div align="center">
+
+### Anggota Kelompok 10
+| No | Nama Mahasiswa | NIM |
+| :---: | :--- | :---: |
+| 1 | **Naufal Indra Rizky** | M0403241171 |
+| 2 | **Nawra Ghaya Tsabita** | M0403241173 |
+| 3 | **Muhammad Farhan Assafari** | M0403241176 |
+| 4 | **Muhammad Aulia Alfarisi** | M0403241193 |
+
+</div>
+
 ---
 
 [Sekilas Tentang](#sekilas-tentang) | [Kebutuhan Sistem](#kebutuhan-sistem) | [Instalasi](#instalasi) | [Konfigurasi](#konfigurasi) | [Maintenance & Otomatisasi](#maintenance--otomatisasi) | [Pengisian Konten](#pengisian-konten) | [Perbandingan Aplikasi Sejenis](#perbandingan-aplikasi-sejenis) | [Panduan Demo Pekan ke-7](#panduan-demo-pekan-ke-7) | [Referensi](#referensi)
