@@ -46,5 +46,4 @@ Dokumentasi ini disusun dan dipelihara oleh **Kelompok 10**:
 | 3 | Muhammad Farhan Assafari | M0403241176 |
 | 4 | Muhammad Aulia Alfarisi | M0403241193 |
 
-----
-//Halaman ini terakhir diperbarui untuk keperluan praktikum dan evaluasi Proyek KDJK.//
+Halaman ini terakhir diperbarui untuk keperluan praktikum dan evaluasi Proyek KDJK.
