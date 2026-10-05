@@ -14,7 +14,10 @@ services:
       - PGID=1000
       - TZ=Asia/Jakarta
     volumes:
-      - ./docker-data:/config
+      - dokuwiki_config:/config
     ports:
       - "8080:80"
     restart: unless-stopped
+
+volumes:
+  dokuwiki_config:
