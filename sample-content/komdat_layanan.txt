@@ -1,0 +1,48 @@
+====== Modul 3: Konfigurasi Layanan Jaringan Server ======
+
+Dokumentasi ini mencakup langkah-langkah implementasi layanan server Linux di lingkungan virtual machine.
+
+===== 1. Domain Name System (DNS) dengan BIND9 =====
+
+Layanan DNS berfungsi memetakan nama domain ke alamat IP server lokal.
+
+==== Instalasi Paket ====
+<code>
+$ sudo apt update
+$ sudo apt install -y bind9 bind9utils bind9-doc
+</code>
+
+==== Konfigurasi Zona Forward & Reverse ====
+Edit file ''/etc/bind/named.conf.local'':
+<code bash>
+zone "komdat.cs.ipb" {
+    type master;
+    file "/etc/bind/db.komdat.cs.ipb";
+};
+
+zone "56.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192";
+};
+</code>
+
+===== 2. Dynamic Host Configuration Protocol (DHCP) =====
+
+Layanan DHCP Server mendistribusikan konfigurasi IP otomatis kepada klien praktikum.
+
+==== Parameter Konfigurasi DHCP (/etc/dhcp/dhcpd.conf) ====
+^ Parameter ^ Nilai Rekomendasi ^ Keterangan ^
+| Subnet | 192.168.56.0 | Subnet IP VM host-only |
+| Netmask | 255.255.255.0 | Subnet mask /24 |
+| IP Range Pool | 192.168.56.100 - 192.168.56.200 | Rentang alokasi klien |
+| Default Gateway | 192.168.56.1 | IP router/gateway |
+| DNS Servers | 192.168.56.10, 8.8.8.8 | Server DNS primer & sekunder |
+
+===== 3. Verifikasi Status Layanan =====
+
+Jalankan perintah berikut untuk memastikan layanan berjalan aktif:
+<code>
+$ sudo systemctl status named
+$ sudo systemctl status isc-dhcp-server
+$ sudo systemctl status apache2
+</code>

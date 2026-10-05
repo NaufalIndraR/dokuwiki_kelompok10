@@ -1,0 +1,28 @@
+====== Pusat Dokumentasi Laboratorium Komunikasi Data & Jaringan Komputer ======
+
+Selamat datang di **Knowledge Base Lab Komunikasi Data (Komdat)** Departemen Ilmu Komputer - IPB University. Dokumentasi ini dibangun menggunakan sistem wiki open source berbasis flat-file, yaitu **DokuWiki**.
+
+===== Daftar Modul Praktikum =====
+
+  * [[:komdat:topologi|Modul 1: Desain Topologi & Subnetting IPv4/IPv6]]
+  * [[:komdat:routing|Modul 2: Konfigurasi Routing Statik & Dinamik (OSPF/RIP)]]
+  * [[:komdat:layanan|Modul 3: Konfigurasi Layanan Jaringan (DNS, DHCP, Web Server)]]
+  * [[:komdat:keamanan|Modul 4: Network Security, Firewall (UFW/iptables), & SSH Hardening]]
+
+===== Karakteristik Arsitektur DokuWiki =====
+
+Wiki engine ini dipilih karena keunggulan arsitekturalnya:
+  * **Tanpa Basis Data SQL (Flat-File Engine):** Seluruh konten, revisi, dan metadata disimpan dalam berkas teks biasa (plain text), sehingga sangat hemat memori (RAM < 64 MB).
+  * **Kemudahan Portabilitas & Backup:** Pencadangan data (*backup*) semudah menyalin direktori ''data/'' dan ''conf/''.
+  * **Kontrol Akses Terperinci (ACL):** Mendukung pemisahan hak akses antara pengelola lab (admin), asisten praktikum (editor), dan mahasiswa (viewer).
+  * **Pencarian Cepat:** Memiliki mesin indeks pencarian internal berbasis teks tanpa memerlukan Elasticsearch atau MySQL Fulltext.
+
+===== Tim Pengembang =====
+
+^ Peran ^ Nama Mahasiswa ^ NIM ^
+| Koordinator & SysAdmin | [Nama Mahasiswa 1] | G64xxxxxx |
+| Content & Documentation | [Nama Mahasiswa 2] | G64xxxxxx |
+| QA & Presentation Lead | [Nama Mahasiswa 3] | G64xxxxxx |
+
+----
+//Dokumentasi ini disusun untuk memenuhi tugas Proyek Komunikasi Data CS-IPB.//

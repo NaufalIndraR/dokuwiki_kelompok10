@@ -1,0 +1,8 @@
+# Docker testing data
+docker-data/
+
+# Temporary / OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.log

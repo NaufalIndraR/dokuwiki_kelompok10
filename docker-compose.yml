@@ -1,0 +1,20 @@
+version: '3.8'
+
+# ==============================================================================
+# Docker Compose untuk DokuWiki (Alternatif Pengujian Cepat Lokal)
+# Proyek Praktikum Komunikasi Data - CS IPB
+# ==============================================================================
+
+services:
+  dokuwiki:
+    image: lscr.io/linuxserver/dokuwiki:latest
+    container_name: dokuwiki-komdat
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jakarta
+    volumes:
+      - ./docker-data:/config
+    ports:
+      - "8080:80"
+    restart: unless-stopped
