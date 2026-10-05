@@ -5,7 +5,7 @@
 
 <p align="center">
   <b>Tugas Proyek Aplikasi Web Self-Hosted — Praktikum Komunikasi Data</b><br>
-  Departemen Ilmu Komputer | IPB University
+  <b>Kelompok 10</b> &bull; Departemen Ilmu Komputer | IPB University
 </p>
 
 <p align="center">
