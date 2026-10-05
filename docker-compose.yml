@@ -6,9 +6,9 @@ version: '3.8'
 # ==============================================================================
 
 services:
-  dokuwiki:
+  kelompok10-dokuwiki:
     image: lscr.io/linuxserver/dokuwiki:latest
-    container_name: dokuwiki-komdat
+    container_name: kelompok10-dokuwiki
     environment:
       - PUID=1000
       - PGID=1000
