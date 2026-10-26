@@ -1,3 +1,0 @@
-====== Tárgymutató ======
-
-Itt láthatók a webhelyen található oldalak [[doku>hu:namespaces|névterek]] szerint rendezve.

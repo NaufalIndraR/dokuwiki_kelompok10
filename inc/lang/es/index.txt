@@ -1,3 +1,0 @@
-====== Mapa del sitio ======
-
-Este es un mapa del sitio con todas las páginas disponibles ordenadas por [[doku>es:namespaces|espacios de nombres]].

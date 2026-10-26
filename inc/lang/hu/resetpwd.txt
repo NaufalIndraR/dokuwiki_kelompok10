@@ -1,3 +1,0 @@
-====== Új jelszó beállítása ======
-
-Add meg a használni kívánt új jelszót.
