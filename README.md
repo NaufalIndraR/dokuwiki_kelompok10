@@ -294,9 +294,14 @@ Basis pengetahuan yang telah dimasukkan ke dalam DokuWiki bertema **Pusat Dokume
 
 ---
 
-## 6. Perbandingan dengan Aplikasi Sejenis
+## 6. Pembahasan
 
-Sesuai aturan projek yang mewajibkan komparasi dengan aplikasi/situs web asli terkemuka:
+DokuWiki
+
+Kelebihan:
+Kekurangan:
+
+Perbandingan dengan Aplikasi Sejenis
 
 | Parameter Evaluasi | DokuWiki (Pilihan Kelompok 10) | MediaWiki (Mesin Wikipedia) | BookStack |
 | :--- | :--- | :--- | :--- |
