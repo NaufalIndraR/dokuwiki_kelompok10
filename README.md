@@ -311,7 +311,6 @@ Basis pengetahuan yang telah dimasukkan ke dalam DokuWiki bertema **Pusat Dokume
 * **Struktur organisasi kurang formal:** DokuWiki menggunakan namespace untuk mengelompokkan halaman seperti folder (fleksibel), berbeda dengan BookStack yang mempunyai hierarki tetap yang membuat struktur dokumentasi lebih seragam.
 * **Tidak ada editor WYSIWYG bawaan:** Editor bawaan berbasis markup, sintaks perlu dipelajari terlebih dahulu oleh pengguna.
 
-##
 Perbandingan dengan Aplikasi Sejenis
 
 | Parameter Evaluasi | DokuWiki (Pilihan Kelompok 10) | MediaWiki (Mesin Wikipedia) | BookStack |
