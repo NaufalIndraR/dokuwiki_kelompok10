@@ -372,8 +372,10 @@ Berikut perbandingan DokuWiki dengan aplikasi wiki dan dokumentasi self-hosted l
 
 ### Pembahasan Analisis Komparasi
 **1. Dibandingkan dengan MediaWiki:** MediaWiki dirancang untuk kebutuhan ensiklopedia publik bersakala masif (seperti Wikipedia) dengan jutaan halaman dan pengguna anonim. Namun, untuk sistem dokumentasi laboratorium atau tim teknis internal, kompleksitas instalasi dan beban pemeliharaan database MySQL pada MediaWiki menjadikannya kurang efisien dibandingkan DokuWiki yang ringan dan minim perawatan.
+
 **2. Dibandingkan dengan BookStack:** Bookstack menawarkan antarmuka modern menyerupai buku fisik, namun membatasi pengorganisasian konten pada hierarki tetap (*Shelf*> *Book*> *Chapter*> *Page* ). Sebaliknya, sistem *namespace* DokuWiki memberikan fleksibilitas tanpa batas bagi modul-modul praktikum yang memiliki sub-cabang materi.
-**Kesimpulan Komparasi:** Dokuwiki terbukti menjadi pilihan paling seimbang antara kemudahan pemeliharaan, keandalan tanpa database terpisah, dan efisiensi konsumsi sumber daya komputasi.
+
+**3. Kesimpulan Komparasi:** Dokuwiki terbukti menjadi pilihan paling seimbang antara kemudahan pemeliharaan, keandalan tanpa database terpisah, dan efisiensi konsumsi sumber daya komputasi.
 
 ---
 
