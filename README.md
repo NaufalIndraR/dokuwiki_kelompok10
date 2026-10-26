@@ -286,17 +286,7 @@ Pendaftaran mandiri dinonaktifkan (`disableactions = register`), jadi akun dibua
 
 ### 3. Membuat dan menyunting halaman
 
-Klik tombol sunting (ikon pensil) pada halaman, ubah isinya, lalu simpan. DokuWiki memakai sintaksnya sendiri, misalnya:
-
-```text
-====== Judul Halaman ======
-**teks tebal**, //teks miring//
-  * butir daftar
-[[komdat:routing|tautan ke modul routing]]
-
-^ Kolom A ^ Kolom B ^
-| isi 1    | isi 2    |
-```
+Klik tombol sunting (ikon pensil) pada halaman, ubah isinya, lalu simpan. DokuWiki memakai sintaksnya sendiri.
 
 <!-- SCREENSHOT: halaman dalam mode sunting dengan toolbar editor | img/06-sunting-halaman.png -->
 ![Mode sunting halaman](img/06-sunting-halaman.png)
