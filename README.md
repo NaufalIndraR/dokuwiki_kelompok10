@@ -301,7 +301,7 @@ Basis pengetahuan yang telah dimasukkan ke dalam DokuWiki bertema **Pusat Dokume
 ### Kelebihan:
 * **Tidak butuh database:** DokuWiki menyimpan semua halaman sebagai file teks biasa (.txt) di folder data.
 * **Konsumsi memori rendah:** Konsumsi RAM di bawah 64 MB, lebih kecil dibandingkan kedua aplikasi pembanding sejenis yaitu, MediaWiki dan BookStack.
-* **Backup mudah:**Seluruh isi wiki berada pada satu folder, untuk mencadangkannya cukup mengarsipkan folder (tar).
+* **Backup mudah:** Seluruh isi wiki berada pada satu folder, untuk mencadangkannya cukup mengarsipkan folder (tar).
 * **Riwayat revisi dan rollback:** Setiap perubahan pada halaman dicatat, versi lama dan sekarang dapat dibandingkan, pemulihan (rollback) dapat dilakukan yaitu, mengembalikan halaman ke versi sebelumnya.
 * **Kontrol akses berjenjang (ACL):** Izin dapat diatur per pengguna untuk suatu namespace, meliputi read, create, upload, delete.
   
@@ -311,7 +311,7 @@ Basis pengetahuan yang telah dimasukkan ke dalam DokuWiki bertema **Pusat Dokume
 * **Struktur organisasi kurang formal:** DokuWiki menggunakan namespace untuk mengelompokkan halaman seperti folder (fleksibel), berbeda dengan BookStack yang mempunyai hierarki tetap yang membuat struktur dokumentasi lebih seragam.
 * **Tidak ada editor WYSIWYG bawaan:** Editor bawaan berbasis markup, sintaks perlu dipelajari terlebih dahulu oleh pengguna.
 
-
+##
 Perbandingan dengan Aplikasi Sejenis
 
 | Parameter Evaluasi | DokuWiki (Pilihan Kelompok 10) | MediaWiki (Mesin Wikipedia) | BookStack |
