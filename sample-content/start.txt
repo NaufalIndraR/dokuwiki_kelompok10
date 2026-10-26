@@ -1,28 +1,26 @@
-====== Pusat Dokumentasi Laboratorium Komunikasi Data & Jaringan Komputer ======
+====== Pusat Dokumentasi Lab Komunikasi Data ======
 
-Selamat datang di **Knowledge Base Lab Komunikasi Data (Komdat)** Departemen Ilmu Komputer - IPB University. Dokumentasi ini dibangun menggunakan sistem wiki open source berbasis flat-file, yaitu **DokuWiki**.
+Wiki ini berisi catatan praktikum Komunikasi Data dan Jaringan Komputer (KDJK), Departemen Ilmu Komputer, IPB University. Wiki dijalankan dengan DokuWiki, aplikasi wiki yang menyimpan halaman sebagai berkas teks tanpa database.
 
-===== Daftar Modul Praktikum =====
+===== Modul Praktikum =====
 
-  * [[:komdat:topologi|Modul 1: Desain Topologi & Subnetting IPv4/IPv6]]
-  * [[:komdat:routing|Modul 2: Konfigurasi Routing Statik & Dinamik (OSPF/RIP)]]
+  * [[:komdat:topologi|Modul 1: Desain Topologi dan Subnetting IPv4/IPv6]]
+  * [[:komdat:routing|Modul 2: Konfigurasi Routing Statik dan Dinamik (OSPF/RIP)]]
   * [[:komdat:layanan|Modul 3: Konfigurasi Layanan Jaringan (DNS, DHCP, Web Server)]]
-  * [[:komdat:keamanan|Modul 4: Network Security, Firewall (UFW/iptables), & SSH Hardening]]
+  * [[:komdat:keamanan|Modul 4: Keamanan Jaringan, Firewall (UFW/iptables), dan SSH]]
 
-===== Karakteristik Arsitektur DokuWiki =====
+===== Tentang Wiki Ini =====
 
-Wiki engine ini dipilih karena keunggulan arsitekturalnya:
-  * **Tanpa Basis Data SQL (Flat-File Engine):** Seluruh konten, revisi, dan metadata disimpan dalam berkas teks biasa (plain text), sehingga sangat hemat memori (RAM < 64 MB).
-  * **Kemudahan Portabilitas & Backup:** Pencadangan data (*backup*) semudah menyalin direktori ''data/'' dan ''conf/''.
-  * **Kontrol Akses Terperinci (ACL):** Mendukung pemisahan hak akses antara pengelola lab (admin), asisten praktikum (editor), dan mahasiswa (viewer).
-  * **Pencarian Cepat:** Memiliki mesin indeks pencarian internal berbasis teks tanpa memerlukan Elasticsearch atau MySQL Fulltext.
+  * Halaman bisa dibaca siapa saja. Menyunting halaman dan mengunggah berkas memerlukan login.
+  * Setiap perubahan tersimpan sebagai revisi, sehingga versi lama bisa dilihat dan dikembalikan.
+  * Halaman modul dikelompokkan dalam namespace ''komdat''.
 
 ===== Kelompok 10 =====
 
-^ Nama Mahasiswa ^ NIM ^ Peran Proyek ^
-| Naufal Indra Rizky | M0403241171 | Deployment, Virtual Host & Docker Config |
-| Nawra Ghaya Tsabita | M0403241173 | Pengisian Konten Wiki & Perbandingan App |
-| Muhammad Farhan Assafari | M0403241176 | Skrip Otomasi Instalasi & Backup Cron |
-| Muhammad Aulia Alfarisi | M0403241193 | Konfigurasi Server PHP, ACL & Presentasi |
+  * Naufal Indra Rizky (M0403241171)
+  * Nawra Ghaya Tsabita (M0403241173)
+  * Muhammad Farhan Assafari (M0403241176)
+  * Muhammad Aulia Alfarisi (M0403241193)
 
-Dokumentasi ini disusun untuk memenuhi tugas Proyek Akhir Praktikum Komunikasi Data dan Jaringan Komputer (KDJK).
+Wiki ini dibuat sebagai bagian dari proyek akhir praktikum KDJK.
+
