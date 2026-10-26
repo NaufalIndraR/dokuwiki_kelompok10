@@ -50,7 +50,12 @@ rm -f "$TEMP_TAR"
 
 if [ -d "./sample-content" ]; then
     echo -e "${BLUE}[INFO] Memuat konten modul praktikum ke ${WEB_ROOT}/data/pages/...${NC}"
-    cp -r ./sample-content/* "$WEB_ROOT/data/pages/" 2>/dev/null || true
+    [ -f "./sample-content/start.txt" ] && cp ./sample-content/start.txt "$WEB_ROOT/data/pages/"
+    [ -d "./sample-content/komdat" ] && cp -r ./sample-content/komdat "$WEB_ROOT/data/pages/"
+    if [ -d "./sample-content/conf" ]; then
+        echo -e "${BLUE}[INFO] Memuat konfigurasi dan akun pengguna ke ${WEB_ROOT}/conf/...${NC}"
+        cp -r ./sample-content/conf/* "$WEB_ROOT/conf/"
+    fi
 fi
 
 echo -e "\n${BLUE}[6/7] Mengatur kepemilikan dan hak akses (chown & chmod)...${NC}"

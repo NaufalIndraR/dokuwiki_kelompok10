@@ -222,10 +222,21 @@ Agar tautan dokumen rapi tanpa parameter `doku.php?id=`:
    ```
 
 ### Pengaturan Hak Akses (Access Control List - ACL)
-Pengaturan ACL dilakukan pada menu **Admin** -> **Access Control List Management**:
-* **Pengunjung Publik (`@ALL`):** Izin hanya membaca (*Read-only*) pada namespace materi praktikum umum.
-* **Akun Mahasiswa (`@user`):** Izin membaca dan menyunting (*Read & Edit*) catatan modul praktikum.
-* **Administrator (`@admin`):** Hak kendali penuh terhadap manajemen user, plugin, dan konfigurasi sistem.
+Pengaturan ACL diterapkan secara terstruktur pada berkas `conf/acl.auth.php`:
+* **Pengunjung Publik (`@ALL`):** Izin membaca (*Read-only*) pada seluruh modul praktikum umum.
+* **Akun Mahasiswa (`@user`):** Izin membaca, menyunting, dan membuat dokumen (*Read, Edit, Create, Upload*).
+* **Administrator (`@admin`):** Hak kendali penuh terhadap manajemen user, plugin, dan konfigurasi sistem (*Full Admin & Delete*).
+
+### Daftar Akun Siap Pakai (Pre-configured Accounts)
+Sistem telah dilengkapi berkas akun terenkripsi bcrypt pada `conf/users.auth.php`:
+
+| Username | Nama Lengkap | Group | Password Default | Hak Akses |
+| :--- | :--- | :--- | :--- | :--- |
+| **`admin`** | Administrator Lab Komdat | `@admin, @user` | `AdminKomdat10!` | Full Superuser & Admin Panel |
+| **`naufal`** | Naufal Indra Rizky | `@admin, @user` | `AdminKomdat10!` | Full Superuser & Admin Panel |
+| **`nawra`** | Nawra Ghaya Tsabita | `@user` | `AdminKomdat10!` | Editor Praktikum (Read & Edit) |
+| **`farhan`** | Muhammad Farhan Assafari | `@user` | `AdminKomdat10!` | Editor Praktikum (Read & Edit) |
+| **`aulia`** | Muhammad Aulia Alfarisi | `@user` | `AdminKomdat10!` | Editor Praktikum (Read & Edit) |
 
 ### Ekstensi & Plugin Tambahan
 Beberapa plugin yang dapat diinstal melalui menu **Admin** -> **Extension Manager**:

@@ -29,6 +29,10 @@
 !/conf/scheme.conf
 !/conf/smileys.conf
 !/conf/wordblock.conf
+!/conf/local.php
+!/conf/users.auth.php
+!/conf/acl.auth.php
+
 /data/attic/*
 /data/cache/*
 /data/index/*
