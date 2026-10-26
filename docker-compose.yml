@@ -10,6 +10,11 @@ services:
       - TZ=Asia/Jakarta
     volumes:
       - dokuwiki_config:/config
+      - ./conf/local.php:/config/dokuwiki/conf/local.php
+      - ./conf/users.auth.php:/config/dokuwiki/conf/users.auth.php
+      - ./conf/acl.auth.php:/config/dokuwiki/conf/acl.auth.php
+      - ./data/pages/start.txt:/config/dokuwiki/data/pages/start.txt
+      - ./data/pages/komdat:/config/dokuwiki/data/pages/komdat
     ports:
       - "8080:80"
     restart: unless-stopped
