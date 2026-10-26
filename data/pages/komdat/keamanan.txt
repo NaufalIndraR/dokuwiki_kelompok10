@@ -1,0 +1,51 @@
+====== Modul 4: Network Security, Firewall (UFW/iptables), & SSH Hardening ======
+
+===== 1. Tujuan Praktikum =====
+  * Mengamankan server lab dari serangan brute-force, unauthorized access, dan sniffing.
+  * Menerapkan firewall stateful berbasis UFW (Uncomplicated Firewall) dan iptables.
+  * Menerapkan penguatan konfigurasi SSH (SSH Key-Based Authentication & Port Hardening).
+
+===== 2. Aturan Firewall dengan UFW =====
+Konfigurasi kebijakan default drop dan hanya mengizinkan port yang dibutuhkan:
+<code>
+# Reset aturan dan set kebijakan default
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Izinkan port SSH (custom port), Web Server (HTTP/HTTPS)
+sudo ufw allow 2222/tcp comment 'SSH Custom Port'
+sudo ufw allow 80/tcp comment 'HTTP DokuWiki'
+sudo ufw allow 443/tcp comment 'HTTPS DokuWiki'
+sudo ufw allow 8080/tcp comment 'Docker Compose DokuWiki'
+
+# Aktifkan UFW
+sudo ufw enable
+sudo ufw status verbose
+</code>
+
+===== 3. SSH Hardening =====
+Edit konfigurasi ''/etc/ssh/sshd_config'':
+<code>
+Port 2222
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+MaxAuthTries 3
+ClientAliveInterval 300
+ClientAliveCountMax 2
+</code>
+
+Reload SSH service:
+<code>
+sudo systemctl restart sshd
+</code>
+
+===== 4. Pencegahan Brute-Force dengan Fail2Ban =====
+<code>
+sudo apt install -y fail2ban
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+sudo fail2ban-client status sshd
+</code>
+
+[[start|Kembali ke Halaman Utama]]

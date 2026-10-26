@@ -48,6 +48,11 @@ mkdir -p "$WEB_ROOT"
 tar -xzf "$TEMP_TAR" -C "$WEB_ROOT" --strip-components=1
 rm -f "$TEMP_TAR"
 
+if [ -d "./sample-content" ]; then
+    echo -e "${BLUE}[INFO] Memuat konten modul praktikum ke ${WEB_ROOT}/data/pages/...${NC}"
+    cp -r ./sample-content/* "$WEB_ROOT/data/pages/" 2>/dev/null || true
+fi
+
 echo -e "\n${BLUE}[6/7] Mengatur kepemilikan dan hak akses (chown & chmod)...${NC}"
 chown -R www-data:www-data "$WEB_ROOT"
 find "$WEB_ROOT" -type d -exec chmod 755 {} \;

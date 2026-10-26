@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentasi Proyek DokuWiki — Kelompok 10 KDJK IPB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 15% 15%, #0f172a 0%, #020617 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(148, 163, 184, 0.15);
+      --primary: #38bdf8;
+      --primary-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      --accent: #a855f7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Top Progress Bar */
+    #progress-container {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--primary-gradient);
+      transition: width 0.3s ease;
+    }
+
+    /* Top Header Bar */
+    header {
+      padding: 18px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-badge {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* Main Slides Viewport */
+    #slides-viewport {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 40px 90px 40px;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      width: 90%;
+      max-width: 1100px;
+      min-height: 560px;
+      max-height: 82vh;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 45px 55px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.96) translateY(20px);
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+      z-index: 10;
+    }
+
+    /* Slide Typography */
+    .slide-number-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    h1.slide-title {
+      font-size: 2.3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2.slide-subtitle {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    p {
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 1.05rem;
+      margin-bottom: 16px;
+    }
+
+    /* Grid layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 12px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .card p {
+      font-size: 0.95rem;
+      margin-bottom: 0;
+      color: #94a3b8;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+    th {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Code Blocks */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+
+    /* Feature List */
+    ul.feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    ul.feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 1rem;
+      color: #e2e8f0;
+    }
+    ul.feature-list li::before {
+      content: '✔';
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Member Badge */
+    .member-box {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .member-box:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .member-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .member-nim {
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .member-role {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Bottom Navigation Bar */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.85);
+      border-top: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      z-index: 50;
+    }
+
+    .slide-counter {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .slide-counter span {
+      color: var(--primary);
+    }
+
+    .nav-hints {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    kbd {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.75rem;
+      font-family: inherit;
+    }
+
+    /* Print Style for PDF Export */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+        overflow: visible !important;
+      }
+      header, footer, #progress-container {
+        display: none !important;
+      }
+      #slides-viewport {
+        padding: 0 !important;
+        display: block !important;
+      }
+      .slide {
+        position: relative !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 100vh !important;
+        box-shadow: none !important;
+        border: none !important;
+        page-break-after: always !important;
+        background: white !important;
+        color: black !important;
+      }
+      h1.slide-title {
+        color: #0284c7 !important;
+        -webkit-text-fill-color: #0284c7 !important;
+      }
+      th {
+        background: #e2e8f0 !important;
+        color: #0f172a !important;
+      }
+      pre {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <header>
+    <div class="brand">
+      <span>DokuWiki</span>
+      <span class="brand-badge">Kelompok 10 KDJK</span>
+    </div>
+    <div class="controls">
+      <button class="btn" id="btn-prev" onclick="prevSlide()">◀ Sebelumnya</button>
+      <button class="btn" id="btn-next" onclick="nextSlide()">Berikutnya ▶</button>
+      <button class="btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+      <button class="btn" onclick="window.print()">🖨 Cetak PDF</button>
+    </div>
+  </header>
+
+  <main id="slides-viewport">
+
+    <!-- Slide 1: Cover -->
+    <div class="slide active">
+      <div class="slide-number-tag">Slide 1 / 11</div>
+      <h1 class="slide-title">Proyek Aplikasi Web Self-Hosted: DokuWiki</h1>
+      <h2 class="slide-subtitle">Sistem Manajemen Basis Pengetahuan & Dokumentasi Laboratorium Komdat</h2>
+      <p>Praktikum Komunikasi Data dan Jaringan Komputer (KDJK) — Departemen Ilmu Komputer, IPB University</p>
+      
+      <div class="grid-4" style="margin-top: 28px;">
+        <div class="member-box">
+          <div class="member-name">Naufal Indra Rizky</div>
+          <div class="member-nim">M0403241171</div>
+          <div class="member-role">Lead Deployment & Dokploy</div>
+        </div>
+        <div class="member-box">
+          <div class="member-name">Nawra Ghaya Tsabita</div>
+          <div class="member-nim">M0403241173</div>
+          <div class="member-role">Konten Lab & Riset Komparasi</div>
+        </div>
+        <div class="member-box">
+          <div class="member-name">Muhammad Farhan Assafari</div>
+          <div class="member-nim">M0403241176</div>
+          <div class="member-role">Otomasi setup.sh & Cron Backup</div>
+        </div>
+        <div class="member-box">
+          <div class="member-name">Muhammad Aulia Alfarisi</div>
+          <div class="member-nim">M0403241193</div>
+          <div class="member-role">Konfigurasi Apache, ACL & Slide</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Latar Belakang & Pemilihan App -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 2 / 11</div>
+      <h1 class="slide-title">Latar Belakang & Pemilihan Aplikasi</h1>
+      <h2 class="slide-subtitle">Berdasarkan Kurasi Awesome-Selfhosted & Panduan auriza/komdat-lab</h2>
+      
+      <div class="grid-2">
+        <div class="card">
+          <h3>Kebutuhan Riil Laboratorium</h3>
+          <p>Laboratorium jaringan memerlukan dokumentasi teknis yang terpusat untuk topologi, subnetting, instruksi rute, dan konfigurasi server yang dapat diakses cepat oleh mahasiswa dan asisten tanpa hambatan beban server.</p>
+        </div>
+        <div class="card">
+          <h3>Kesesuaian Rule Projek</h3>
+          <p><strong>Kategori:</strong> Wikis pada Awesome-Selfhosted.<br>
+          <strong>Legalitas:</strong> 100% Legal & Open Source (Lisensi GPLv2).<br>
+          <strong>Bandingan Asli:</strong> Dibandingkan dengan <strong>MediaWiki</strong> (Wikipedia) dan <strong>BookStack</strong>.</p>
+        </div>
+      </div>
+
+      <ul class="feature-list" style="margin-top: 20px;">
+        <li>Bebas dari dependensi basis data SQL (sepenuhnya flat-file berbasis berkas teks).</li>
+        <li>Konsumsi RAM operasional terendah di kelasnya (< 64 MB), ramah VPS mikro.</li>
+      </ul>
+    </div>
+
+    <!-- Slide 3: Arsitektur Flat-File -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 3 / 11</div>
+      <h1 class="slide-title">Arsitektur Flat-File DokuWiki</h1>
+      <h2 class="slide-subtitle">Keunggulan Desain Tanpa Basis Data Relasional SQL</h2>
+      
+      <div class="grid-2">
+        <div>
+          <ul class="feature-list">
+            <li><strong>Storage Sederhana:</strong> Seluruh artikel disimpan langsung sebagai berkas teks biasa di direktori <code>data/pages/</code>.</li>
+            <li><strong>Riwayat Revisi Bawaan:</strong> Perubahan dokumen disimpan dalam <code>data/attic/</code> lengkap dengan visual perbandingan (diff) dan rollback.</li>
+            <li><strong>Zero Database Overhead:</strong> Tidak ada risiko crash server database MySQL atau habisnya connection pool.</li>
+            <li><strong>Portabilitas Maksimal:</strong> Pencadangan dan pemindahan data hanya memerlukan kompresi folder (tar / zip).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Struktur Direktori Kritis</h3>
+          <pre>dokuwiki/
+├── data/
+│   ├── pages/       # Konten wiki (.txt)
+│   ├── attic/       # Riwayat revisi
+│   └── media/       # Gambar modul
+├── conf/            # Konfigurasi & ACL
+└── lib/plugins/     # Ekstensi sistem</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: Topologi & Metode Deployment -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 4 / 11</div>
+      <h1 class="slide-title">Topologi & Metode Deployment</h1>
+      <h2 class="slide-subtitle">Dukungan Dua Metode Instalasi Fleksibel</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>1. Docker Compose (Dokploy / VPS)</h3>
+          <p>Menggunakan container terstandarisasi untuk kecepatan deployment dan isolasi environment:</p>
+          <pre>services:
+  kelompok10-dokuwiki:
+    image: lscr.io/linuxserver/dokuwiki:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - dokuwiki_config:/config</pre>
+        </div>
+        <div class="card">
+          <h3>2. Native LAMPP (Ubuntu Server)</h3>
+          <p>Instalasi native berkinerja tinggi menggunakan skrip automasi <code>setup.sh</code>:</p>
+          <ul class="feature-list" style="font-size: 0.9rem;">
+            <li>Web Server: Apache 2.4 + mod_rewrite</li>
+            <li>PHP 8.x + Ekstensi XML, GD, Mbstring</li>
+            <li>VirtualHost dengan isolasi direktori privat</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Otomasi CLI (setup.sh) -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 5 / 11</div>
+      <h1 class="slide-title">Otomasi Instalasi CLI (setup.sh)</h1>
+      <h2 class="slide-subtitle">Instalasi Satu Perintah pada Server Linux Ubuntu</h2>
+
+      <p>Skrip <code>setup.sh</code> yang kami bangun menjalankan seluruh tahapan instalasi tanpa intervensi manual yang rumit:</p>
+      <pre># Jalankan skrip setup otomatis
+sudo bash setup.sh</pre>
+
+      <div class="grid-4" style="margin-top: 14px;">
+        <div class="card">
+          <h3 style="font-size: 0.95rem;">1. Update APT</h3>
+          <p style="font-size: 0.85rem;">Memperbarui repository paket Ubuntu terkini.</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 0.95rem;">2. Stack Apache + PHP</h3>
+          <p style="font-size: 0.85rem;">Instalasi web server beserta 6 ekstensi PHP wajib.</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 0.95rem;">3. Download & Permissions</h3>
+          <p style="font-size: 0.85rem;">Unduh rilis resmi dan set izin www-data (775/644).</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 0.95rem;">4. VHost & Konten</h3>
+          <p style="font-size: 0.85rem;">Membuat VirtualHost dan memuat modul lab Komdat.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Konfigurasi Server & Keamanan -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 6 / 11</div>
+      <h1 class="slide-title">Konfigurasi Server & Keamanan</h1>
+      <h2 class="slide-subtitle">Optimasi Parameter, URL Bersih, dan Hak Akses</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Optimasi PHP & Clean URLs</h3>
+          <p><strong>Batas Ukuran Upload & Memori:</strong><br>
+          <code>upload_max_filesize = 32M</code><br>
+          <code>post_max_size = 32M</code><br>
+          <code>memory_limit = 256M</code></p>
+          <p style="margin-top: 10px;"><strong>Nice URLs (Clean URLs):</strong><br>
+          Mengaktifkan Apache <code>.htaccess</code> dan modul rewrite sehingga URL menjadi ringkas tanpa <code>doku.php?id=</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Access Control List (ACL) & Proteksi</h3>
+          <p><strong>Pengaturan Izin Berjenjang:</strong><br>
+          • <code>@ALL</code> (Tamu): Read-only halaman publik.<br>
+          • <code>@user</code> (Mahasiswa): Read & Edit materi praktikum.<br>
+          • <code>@admin</code> (Asisten/Dosen): Pengelolaan penuh & backup.</p>
+          <p style="margin-top: 10px;"><strong>Proteksi Direktori:</strong><br>
+          Direktori <code>data/</code>, <code>conf/</code>, <code>bin/</code>, dan <code>inc/</code> diisolasi via Apache agar tidak dapat diakses langsung oleh publik.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: Maintenance & Backup Otomatis -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 7 / 11</div>
+      <h1 class="slide-title">Maintenance & Backup Otomatis</h1>
+      <h2 class="slide-subtitle">Pencadangan Terjadwal Bebas Downtime Database</h2>
+
+      <div class="grid-2">
+        <div>
+          <p>Pencadangan otomatis dilakukan oleh skrip <code>backup.sh</code> yang mengompresi data wiki, konfigurasi, dan plugin:</p>
+          <pre>tar -czf "$BACKUP_FILE" \
+    --exclude="$DOKUWIKI_DIR/data/cache/*" \
+    -C "$DOKUWIKI_DIR" data conf lib/plugins lib/tpl</pre>
+          <p>Dilengkapi retensi otomatis untuk menghapus arsip lama berusia lebih dari 14 hari.</p>
+        </div>
+        <div class="card">
+          <h3>Penjadwalan Cron Job</h3>
+          <p>Backup berjalan otomatis setiap malam pukul 02.00 WIB:</p>
+          <pre>0 2 * * * /bin/bash /var/www/dokuwiki/backup.sh > /dev/null 2>&1</pre>
+          <h3>Prosedur Restore Cepat</h3>
+          <pre>sudo tar -xzf /var/backups/dokuwiki_backup_*.tar.gz \
+    -C /var/www/dokuwiki/</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8: Pengisian Konten Wiki Lab Komdat -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 8 / 11</div>
+      <h1 class="slide-title">Pengisian Konten: Knowledge Base Lab</h1>
+      <h2 class="slide-subtitle">Pusat Dokumentasi Praktikum Komdat Kelompok 10</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Modul 1 & 2</h3>
+          <p><strong>Modul 1: Desain Topologi & Subnetting</strong><br>
+          Arsitektur bintang hierarkis, alokasi VLSM 192.168.10.0/24 (VLAN 10, 20, 30, 40), dan konfigurasi sub-interface Linux.</p>
+          <p style="margin-top: 12px;"><strong>Modul 2: Routing Statik & Dinamik</strong><br>
+          Forwarding kernel IPv4, static route hop-by-hop, dan protokol dynamic OSPF Area 0 dengan FRRouting.</p>
+        </div>
+        <div class="card">
+          <h3>Modul 3 & 4</h3>
+          <p><strong>Modul 3: Konfigurasi Layanan Jaringan</strong><br>
+          DNS otoritatif BIND9 (labkomdat.ipb.ac.id), ISC-DHCP-Server lease alokasi otomatis, dan Apache web server.</p>
+          <p style="margin-top: 12px;"><strong>Modul 4: Network Security & Hardening</strong><br>
+          Firewall stateful UFW/iptables, SSH Key Authentication port 2222, dan pencegahan brute-force Fail2Ban.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9: Komparasi Aplikasi Sejenis -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 9 / 11</div>
+      <h1 class="slide-title">Komparasi dengan Aplikasi Sejenis</h1>
+      <h2 class="slide-subtitle">Evaluasi Komparatif Sesuai Aturan Penugasan</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>DokuWiki (Pilihan Kami)</th>
+            <th>MediaWiki (Wikipedia)</th>
+            <th>BookStack</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Penyimpanan Data</strong></td>
+            <td><strong>Flat-file (.txt)</strong></td>
+            <td>SQL Database (MySQL)</td>
+            <td>SQL Database (MySQL)</td>
+          </tr>
+          <tr>
+            <td><strong>Konsumsi RAM</strong></td>
+            <td><strong>&lt; 64 MB (Sangat Ringan)</strong></td>
+            <td>&gt; 256 MB (Tinggi)</td>
+            <td>~128 - 256 MB (Sedang)</td>
+          </tr>
+          <tr>
+            <td><strong>Pencadangan Data</strong></td>
+            <td><strong>Cukup kompres folder</strong></td>
+            <td>Dump SQL + Backup media</td>
+            <td>Dump SQL + Direktori storage</td>
+          </tr>
+          <tr>
+            <td><strong>Struktur Konten</strong></td>
+            <td>Namespace hierarkis bebas</td>
+            <td>Kategori datar</td>
+            <td>Kaku (Rak &gt; Buku &gt; Bab)</td>
+          </tr>
+          <tr>
+            <td><strong>Setup & Pemeliharaan</strong></td>
+            <td><strong>Sangat Cepat & Rendah Risiko</strong></td>
+            <td>Kompleks & Rentan Crash DB</td>
+            <td>Migrasi Laravel & Database</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Slide 10: Hasil & Pengujian -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 10 / 11</div>
+      <h1 class="slide-title">Hasil Pengujian & Kesimpulan</h1>
+      <h2 class="slide-subtitle">Verifikasi Keberhasilan Proyek Akhir</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Pencapaian Minimum Requirement</h3>
+          <ul class="feature-list" style="font-size: 0.95rem;">
+            <li>Dokumentasi instalasi di GitHub memenuhi format <code>templat.md</code> auriza/komdat-lab.</li>
+            <li>Aplikasi sukses di-deploy ke VPS / Dokploy dan dapat diakses publik via internet.</li>
+            <li>Slide presentasi interaktif dan Marp siap untuk demo pekan ke-7.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Kesimpulan Utama</h3>
+          <p>DokuWiki terbukti menjadi pilihan paling efisien dan tangguh untuk dokumentasi jaringan internal laboratorium. Ketiadaan ketergantungan SQL memastikan ketersediaan tinggi (high availability) dan kemudahan pemulihan bencana bagi pengelola lab.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 11: Penutup -->
+    <div class="slide">
+      <div class="slide-number-tag">Slide 11 / 11</div>
+      <h1 class="slide-title" style="font-size: 3rem; margin-top: 30px;">Terima Kasih!</h1>
+      <h2 class="slide-subtitle" style="font-size: 1.4rem;">Sesi Tanya Jawab (Q&A) & Demonstrasi Langsung</h2>
+
+      <div class="card" style="margin-top: 24px; text-align: center; padding: 30px;">
+        <p style="font-size: 1.1rem; color: #f8fafc; margin-bottom: 12px;"><strong>Kelompok 10 Praktikum Komdat — IPB University</strong></p>
+        <p style="font-size: 0.95rem; color: var(--primary);">Naufal Indra Rizky • Nawra Ghaya Tsabita • Muhammad Farhan Assafari • Muhammad Aulia Alfarisi</p>
+        <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 16px;">Tautan Repositori GitHub:<br>
+          <a href="https://github.com/NaufalIndraR/dokuwiki_kelompok10" target="_blank" style="color: var(--primary); text-decoration: none; font-family: 'JetBrains Mono';">https://github.com/NaufalIndraR/dokuwiki_kelompok10</a>
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="slide-counter">
+      Halaman <span id="current-slide">1</span> dari <span id="total-slides">11</span>
+    </div>
+    <div class="nav-hints">
+      Navigasi: <kbd>◀</kbd> / <kbd>▶</kbd> atau <kbd>Spasi</kbd> | Layar Penuh: <kbd>F</kbd>
+    </div>
+  </footer>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progress-bar');
+    const currentSlideSpan = document.getElementById('current-slide');
+    const totalSlidesSpan = document.getElementById('total-slides');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+
+    let currentIndex = 0;
+    totalSlidesSpan.textContent = slides.length;
+
+    function updateSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = slides.length - 1;
+      currentIndex = index;
+
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentIndex);
+      });
+
+      const progress = ((currentIndex + 1) / slides.length) * 100;
+      progressBar.style.width = `${progress}%`;
+      currentSlideSpan.textContent = currentIndex + 1;
+
+      btnPrev.disabled = currentIndex === 0;
+      btnNext.disabled = currentIndex === slides.length - 1;
+    }
+
+    function nextSlide() {
+      if (currentIndex < slides.length - 1) updateSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      if (currentIndex > 0) updateSlide(currentIndex - 1);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        updateSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        updateSlide(slides.length - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    updateSlide(0);
+  </script>
+</body>
+</html>

@@ -41,6 +41,9 @@
 /data/tmp/*
 /data/pages/*
 !data/pages/wiki/
+!/data/pages/start.txt
+!/data/pages/komdat/
+!/data/pages/komdat/*
 /lib/tpl/*
 !/lib/tpl/dokuwiki
 !/lib/tpl/index.php

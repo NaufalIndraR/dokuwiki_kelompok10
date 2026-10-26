@@ -1,0 +1,41 @@
+====== Modul 2: Konfigurasi Routing Statik & Dinamik (OSPF/RIP) ======
+
+===== 1. Tujuan Praktikum =====
+  * Memahami konsep forwarding paket data antarsubnet (Inter-VLAN Routing).
+  * Menerapkan static routing dengan penentuan next-hop dan metric.
+  * Menerapkan dynamic routing protocol Open Shortest Path First (OSPF v2) menggunakan FRRouting (FRR).
+
+===== 2. Static Routing di Linux =====
+Untuk menghubungkan Subnet Lab A ke Subnet Lab B via router perantara:
+<code>
+# Mengaktifkan IP Forwarding di Linux Kernel
+sudo sysctl -w net.ipv4.ip_forward=1
+echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+
+# Menambahkan rute statik ke subnet remote
+sudo ip route add 192.168.20.0/24 via 10.0.0.2 dev eth1
+</code>
+
+===== 3. Dynamic Routing OSPF dengan FRRouting =====
+Konfigurasi OSPF Area 0 menggunakan FRR:
+<code>
+! Masuk ke terminal vtysh
+sudo vtysh
+
+conf t
+router ospf
+ ospf router-id 1.1.1.1
+ network 192.168.10.0/24 area 0
+ network 10.0.0.0/30 area 0
+exit
+exit
+write memory
+</code>
+
+Verifikasi status tetangga (neighbor) dan tabel routing OSPF:
+<code>
+show ip ospf neighbor
+show ip route ospf
+</code>
+
+[[start|Kembali ke Halaman Utama]]

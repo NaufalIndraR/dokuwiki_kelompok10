@@ -1,0 +1,38 @@
+====== Modul 1: Desain Topologi & Subnetting IPv4/IPv6 ======
+
+===== 1. Tujuan Praktikum =====
+  * Memahami perancangan topologi jaringan laboratorium berbasis hierarkis (Core, Distribution, Access).
+  * Menguasai teknik segmentasi jaringan menggunakan Variable Length Subnet Masking (VLSM).
+  * Menerapkan pembagian Virtual LAN (VLAN) untuk pemisahan broadcast domain.
+
+===== 2. Skema Topologi Jaringan Lab =====
+Topologi jaringan Lab Komdat menggunakan arsitektur bintang terdistribusi (extended star):
+  * **Router Gateway (MikroTik / Linux Router):** Menghubungkan jaringan lokal lab ke WAN kampus.
+  * **Switch Manageable (L2/L3):** Mengatur trunking 802.1Q dan pemisahan port access VLAN.
+  * **Workstation Mahasiswa:** Terbagi dalam 3 laboratorium (Lab A, Lab B, Lab Riset).
+
+===== 3. Alokasi Subnetting IP Address (VLSM) =====
+Alokasi blok IP utama yang digunakan adalah ''192.168.10.0/24'':
+
+^ Subnet / VLAN ^ Network ID ^ Subnet Mask ^ Range Host ^ Broadcast ^ Jumlah Host ^
+| VLAN 10 (Lab A) | 192.168.10.0/26 | 255.255.255.192 | 192.168.10.1 - 192.168.10.62 | 192.168.10.63 | 62 host |
+| VLAN 20 (Lab B) | 192.168.10.64/26 | 255.255.255.192 | 192.168.10.65 - 192.168.10.126 | 192.168.10.127 | 62 host |
+| VLAN 30 (Server Lab) | 192.168.10.128/27 | 255.255.255.224 | 192.168.10.129 - 192.168.10.158 | 192.168.10.159 | 30 host |
+| VLAN 40 (Manajemen) | 192.168.10.160/28 | 255.255.255.240 | 192.168.10.161 - 192.168.10.174 | 192.168.10.175 | 14 host |
+
+===== 4. Konfigurasi VLAN Trunking di Linux =====
+Contoh konfigurasi sub-interface 802.1Q pada interface ''eth0'':
+<code>
+# Buat VLAN 10 dan VLAN 20
+sudo ip link add link eth0 name eth0.10 type vlan id 10
+sudo ip link add link eth0 name eth0.20 type vlan id 20
+
+# Aktifkan interface dan pasang IP Gateway
+sudo ip addr add 192.168.10.1/26 dev eth0.10
+sudo ip link set dev eth0.10 up
+
+sudo ip addr add 192.168.10.65/26 dev eth0.20
+sudo ip link set dev eth0.20 up
+</code>
+
+[[start|Kembali ke Halaman Utama]]

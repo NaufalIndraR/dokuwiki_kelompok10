@@ -1,0 +1,46 @@
+====== Modul 3: Konfigurasi Layanan Jaringan (DNS, DHCP, Web Server) ======
+
+===== 1. Tujuan Praktikum =====
+  * Mengonfigurasi Dynamic Host Configuration Protocol (ISC-DHCP-Server) untuk alokasi IP otomatis.
+  * Membangun server DNS lokal otoritatif menggunakan BIND9.
+  * Mengonfigurasi Web Server Apache2 dan Nginx untuk melayani aplikasi internal lab.
+
+===== 2. Konfigurasi DHCP Server (isc-dhcp-server) =====
+Berkas ''/etc/dhcp/dhcpd.conf'':
+<code>
+subnet 192.168.10.0 netmask 255.255.255.192 {
+    range 192.168.10.10 192.168.10.60;
+    option routers 192.168.10.1;
+    option domain-name-servers 192.168.10.130, 8.8.8.8;
+    option domain-name "labkomdat.ipb.ac.id";
+    default-lease-time 86400;
+    max-lease-time 172800;
+}
+</code>
+
+===== 3. Konfigurasi DNS Otoritatif (BIND9) =====
+Mendefinisikan zona forward ''labkomdat.ipb.ac.id'' pada ''/etc/bind/named.conf.local'':
+<code>
+zone "labkomdat.ipb.ac.id" {
+    type master;
+    file "/etc/bind/db.labkomdat";
+};
+</code>
+
+Isi berkas record zona ''/etc/bind/db.labkomdat'':
+<code>
+$TTL    604800
+@       IN      SOA     ns1.labkomdat.ipb.ac.id. admin.labkomdat.ipb.ac.id. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns1.labkomdat.ipb.ac.id.
+ns1     IN      A       192.168.10.130
+wiki    IN      A       192.168.10.135
+gateway IN      A       192.168.10.1
+</code>
+
+[[start|Kembali ke Halaman Utama]]

@@ -19,10 +19,10 @@ Wiki engine ini dipilih karena keunggulan arsitekturalnya:
 
 ===== Kelompok 10 =====
 
-Nama : 
-Naufal Indra Rizky - M0403241171
-Nawra Ghaya Tsabita - M0403241173
-Muhammad Farhan Assafari - M0403241176
-Muhammad Aulia Alfarisi - M0403241193
+^ Nama Mahasiswa ^ NIM ^ Peran Proyek ^
+| Naufal Indra Rizky | M0403241171 | Deployment, Virtual Host & Docker Config |
+| Nawra Ghaya Tsabita | M0403241173 | Pengisian Konten Wiki & Perbandingan App |
+| Muhammad Farhan Assafari | M0403241176 | Skrip Otomasi Instalasi & Backup Cron |
+| Muhammad Aulia Alfarisi | M0403241193 | Konfigurasi Server PHP, ACL & Presentasi |
 
-Dokumentasi ini disusun untuk memenuhi tugas Proyek KDJK
+Dokumentasi ini disusun untuk memenuhi tugas Proyek Akhir Praktikum Komunikasi Data dan Jaringan Komputer (KDJK).
