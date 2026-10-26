@@ -338,7 +338,7 @@ Dokumentasi yang dimasukkan ke dalam DokuWiki bertema pusat informasi laboratori
 
 ---
 
-## 7. Perbandingan dengan Aplikasi Sejenis
+## 7. Pembahasan
 
 Berikut perbandingan DokuWiki dengan aplikasi wiki dan dokumentasi self-hosted lainnya:
 
