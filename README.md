@@ -340,18 +340,6 @@ Dokumentasi yang dimasukkan ke dalam DokuWiki bertema pusat informasi laboratori
 
 ## 7. Pembahasan
 
-Berikut perbandingan DokuWiki dengan aplikasi wiki dan dokumentasi self-hosted lainnya:
-
-| Parameter | DokuWiki | MediaWiki | BookStack |
-| --- | --- | --- | --- |
-| Bahasa / Framework | PHP Native | PHP Native | PHP (Laravel) |
-| Kebutuhan Database | Tidak ada (Flat-file `.txt`) | Wajib (MySQL / MariaDB) | Wajib (MySQL / MariaDB) |
-| Konsumsi RAM | Sangat rendah (< 64 MB) | Tinggi (karena dependensi MySQL) | Sedang (~256 - 512 MB) |
-| Metode Backup | Cukup copy/tar folder data | Dump database SQL + backup media | Dump database SQL + folder file |
-| Format Penulisan | DokuWiki markup, Markdown | Wikitext markup | WYSIWYG editor & Markdown |
-| Pengorganisasian | Namespace (hierarki direktori) | Kategori dan link internal | Hierarki Buku, Bab, Halaman |
-| Kemudahan Setup | Sangat cepat (langsung jalan) | Memerlukan migrasi database | Memerlukan migrasi Laravel & database |
-
 ### Kelebihan dan Kekurangan
 
 Berdasarkan dokumentasi resmi DokuWiki dan konfigurasi yang kami pakai pada repositori ini:
@@ -368,15 +356,24 @@ Berdasarkan dokumentasi resmi DokuWiki dan konfigurasi yang kami pakai pada repo
 - Tampilan bawaan sederhana, sehingga tampilan yang lebih modern memerlukan template tambahan.
 - Akun pengguna disimpan di berkas teks (`conf/users.auth.php`). Untuk jumlah pengguna yang besar perlu beralih ke backend otentikasi lain seperti LDAP atau database lewat plugin otentikasi.
 
-**Catatan deployment pada repositori ini**
-- `docker-compose.yml` memakai image `lscr.io/linuxserver/dokuwiki`, lalu me-mount konfigurasi (`local.php`, `users.auth.php`, `acl.auth.php`) dan halaman contoh dari repositori.
-- Compose mendeklarasikan jaringan eksternal `dokploy-network`. Di server tanpa Dokploy, jaringan itu harus dibuat lebih dulu (`docker network create dokploy-network`) agar `docker compose up -d` berjalan.
-- Layanan dipetakan ke port 8080 pada host.
+Berikut perbandingan DokuWiki dengan aplikasi wiki dan dokumentasi self-hosted lainnya:
 
-### Pembahasan
-DokuWiki sangat tepat untuk proyek praktikum dan dokumentasi internal tim kecil karena kesederhanaan arsitekturnya. Tidak adanya ketergantungan pada database SQL meminimalisir risiko kegagalan sistem akibat crash database. 
+| Parameter | DokuWiki | MediaWiki | BookStack |
+| --- | --- | --- | --- |
+| Arsitektur Penyimpanan | Flat-file (.txt) | Database Relasional SQL (MySQL/MariaDB) | Database Relasional SQL (MySQL/MariaDB)  |
+| Kebutuhan Database | Tidak membutuhkan SQL | Wajib MySQL / MariaDB | Wajib MySQL / MariaDB |
+| Konsumsi Memori RAM | Sangat rendah (< 64 MB) | Tinggi (> 256 MB) | Sedang (~128 - 256 MB) |
+| Metode Backup | Cukup arsip berkas folder (tar) | Dump basis data SQL + backup berkas media | Dump basis data SQL + direktori upload |
+| Format Penulisan | DokuWiki markup & Markdown | Wikitext markup | WYSIWYG editor & Markdown |
+| Struktur Organisasi | Namespace hierarkis tanpa batas | Kategori & namespace datar | Hierarki kaku: Rak > Buku > Bab > Halaman |
+| Toleransi Kegagalan | Tinggi (kebal crash DB) | Bergantung pada ketersediaan daemon SQL | Bergantung pada ketersediaan daemon SQL |
+| Kompleksitas Setup | Sangat cepat (langsung siap pakai) | Rumit (migrasi tabel SQL & dependensi) | Sedang (migrasi Laravel & dependensi Composer) |
 
-Sebagai perbandingan, MediaWiki memiliki fitur yang sangat lengkap untuk komunitas raksasa terbuka seperti Wikipedia, namun relatif berat dan rumit untuk dokumentasi skala laboratorium. Sedangkan BookStack menawarkan antarmuka yang sangat rapi menyerupai buku fisik, namun membutuhkan pengaturan server dan database yang lebih kompleks.
+
+### Pembahasan Analisis Komparasi
+**1. Dibandingkan dengan MediaWiki:** MediaWiki dirancang untuk kebutuhan ensiklopedia publik bersakala masif (seperti Wikipedia) dengan jutaan halaman dan pengguna anonim. Namun, untuk sistem dokumentasi laboratorium atau tim teknis internal, kompleksitas instalasi dan beban pemeliharaan database MySQL pada MediaWiki menjadikannya kurang efisien dibandingkan DokuWiki yang ringan dan minim perawatan.
+**2. Dibandingkan dengan BookStack:** Bookstack menawarkan antarmuka modern menyerupai buku fisik, namun membatasi pengorganisasian konten pada hierarki tetap (*Shelf*> *Book*> *Chapter*> *Page* ). Sebaliknya, sistem *namespace* DokuWiki memberikan fleksibilitas tanpa batas bagi modul-modul praktikum yang memiliki sub-cabang materi.
+**Kesimpulan Komparasi:** Dokuwiki terbukti menjadi pilihan paling seimbang antara kemudahan pemeliharaan, keandalan tanpa database terpisah, dan efisiensi konsumsi sumber daya komputasi.
 
 ---
 
