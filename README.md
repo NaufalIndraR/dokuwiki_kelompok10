@@ -1,159 +1,113 @@
-# Aplikasi Web "DokuWiki"
+# Aplikasi Web DokuWiki
 
 Tugas Proyek Aplikasi Web Self-Hosted — Praktikum Komunikasi Data dan Jaringan Komputer (KDJK)  
-Departemen Ilmu Komputer, Fakultas Matematika dan Ilmu Pengetahuan Alam, IPB University
+Departemen Ilmu Komputer, IPB University
 
 ### Kelompok 10
-| Nama Mahasiswa | NIM | Peran & Kontribusi |
-| :--- | :--- | :--- |
-| **Naufal Indra Rizky** | M0403241171 | Deployment, Dokploy Hosting, Docker Compose & Reverse Proxy |
-| **Nawra Ghaya Tsabita** | M0403241173 | Penyusunan Konten Wiki Lab Komdat & Riset Komparasi Aplikasi |
-| **Muhammad Farhan Assafari** | M0403241176 | Otomasi Skrip Instalasi CLI (`setup.sh`) & Skrip Backup Terjadwal |
-| **Muhammad Aulia Alfarisi** | M0403241193 | Konfigurasi VirtualHost, ACL Keamanan & Bahan Presentasi Demo |
-
----
-
-## Ringkasan Pemenuhan Kriteria Penugasan
-
-Sesuai dengan ketentuan pada [auriza/komdat-lab (projek.md)](https://github.com/auriza/komdat-lab/blob/master/projek.md):
-
-- [x] **Pilihan Aplikasi:** Terdaftar resmi pada [Awesome-Selfhosted (Kategori Wikis)](https://github.com/Kickball/awesome-selfhosted#wikis).
-- [x] **Legalitas Aplikasi:** 100% Legal & Open Source (Lisensi GNU General Public License v2 — bebas dari konten pembajakan/piracy).
-- [x] **Aplikasi Pembanding Riil:** Memiliki bandingan aplikasi web asli terkemuka, yaitu **MediaWiki** (mesin di balik Wikipedia) dan **BookStack**.
-- [x] **Keunikan Kelompok:** DokuWiki dipilih khusus oleh Kelompok 10 dan tidak menduplikasi pilihan kelompok lain.
-- [x] **Tutorial Instalasi CLI:** Panduan instalasi langkah demi langkah berbasis CLI Ubuntu Server dan Docker Compose.
-- [x] **Deployment Hosting / VPS:** Aplikasi berhasil di-deploy ke server/VPS dan dapat diakses publik dengan lancar melalui internet.
-- [x] **Konten Aplikasi Terisi:** Basis pengetahuan laboratorium jaringan dengan 4 modul praktikum (Topologi, Routing, Layanan, Keamanan).
-- [x] **Bahan Presentasi (PPT):** Tersedia berkas slide deck interaktif ([`presentasi.html`](presentasi.html)) dan format Marp ([`PRESENTASI.md`](PRESENTASI.md)).
-
----
-
-## Tautan Akses & Bahan Presentasi
-
-* **URL Akses Publik (VPS / Hosting):** `http://43.173.15.121:8080` *(atau via reverse proxy server)*
-* **Slide Presentasi Interaktif (HTML):** Buka [`presentasi.html`](presentasi.html) pada peramban web (mendukung navigasi keyboard & cetak PDF).
-* **Slide Presentasi Marp (Markdown):** [`PRESENTASI.md`](PRESENTASI.md)
-* **Repositori GitHub:** [https://github.com/NaufalIndraR/dokuwiki_kelompok10](https://github.com/NaufalIndraR/dokuwiki_kelompok10)
+- Naufal Indra Rizky (M0403241171)
+- Nawra Ghaya Tsabita (M0403241173)
+- Muhammad Farhan Assafari (M0403241176)
+- Muhammad Aulia Alfarisi (M0403241193)
 
 ---
 
 ## 1. Sekilas Tentang
 
-**DokuWiki** adalah aplikasi wiki open source berbasis PHP yang ditujukan untuk keperluan dokumentasi teknis, catatan tim, dan pembuatan basis pengetahuan (*knowledge base*).
+DokuWiki adalah aplikasi wiki open source berbasis PHP yang ditujukan untuk keperluan dokumentasi teknis, catatan tim, dan pembuatan basis pengetahuan (knowledge base).
 
-Ciri khas utama DokuWiki dibandingkan sistem manajemen konten (CMS) lainnya adalah **DokuWiki tidak membutuhkan database relasional SQL** (seperti MySQL atau PostgreSQL). Seluruh halaman dokumen, riwayat revisi, dan metadata disimpan dalam bentuk berkas teks biasa (*flat-file*) di dalam sistem direktori server.
+Ciri khas utama DokuWiki dibandingkan kebanyakan sistem manajemen konten (CMS) lainnya adalah DokuWiki tidak membutuhkan database relasional SQL (seperti MySQL atau PostgreSQL). Seluruh halaman, riwayat revisi, dan metadata disimpan dalam bentuk berkas teks biasa (flat-file) di dalam sistem direktori server.
 
-### Karakteristik & Keunggulan Arsitektur:
-1. **Konsumsi Memori Sangat Rendah:** Penggunaan RAM operasional di bawah **64 MB**, menjadikannya sangat ringan dan ideal dijalankan pada VM atau server VPS dengan sumber daya terbatas.
-2. **Resiliensi Tinggi:** Meniadakan titik kegagalan (*single point of failure*) yang sering diakibatkan oleh crash server database SQL atau saturasi *connection pool*.
-3. **Pencadangan Instan:** Pencadangan data semudah menyalin atau mengompres direktori berkas (`data/` dan `conf/`).
-4. **Kontrol Versi Terintegrasi:** Setiap pembaruan dokumen mencatat riwayat perubahan (*changelog*), visual *diff*, dan tombol pemulihan (*rollback*) instan.
-5. **Kontrol Akses Berjenjang (ACL):** Mendukung manajemen hak akses granular untuk membatasi izin baca, edit, unggah berkas, maupun manajemen sistem.
+Karakteristik dan kelebihan DokuWiki:
+- Hemat sumber daya: Penggunaan memori RAM sangat rendah (kurang dari 64 MB), sehingga sangat cocok dijalankan pada VM atau server berspesifikasi terbatas.
+- Kemudahan pemeliharaan dan backup: Karena tidak memakai database terpisah, pencadangan data semudah menyalin direktori berkas.
+- Kontrol versi bawaan: Setiap kali dokumen diperbarui, versi sebelumnya tetap tersimpan dan dapat dibandingkan perubahannya (diff) serta dikembalikan (rollback).
+- Kontrol akses (ACL): Memiliki pengaturan izin berjenjang untuk membatasi siapa yang boleh membaca, mengedit, mengunggah file, atau mengelola sistem.
 
 ---
 
 ## 2. Instalasi
 
 ### Prasyarat Sistem
-* **Sistem Operasi:** Linux (Ubuntu Server 22.04 / 24.04 LTS) atau container Docker di Dokploy
-* **Web Server:** Apache 2.4 (dengan modul `mod_rewrite`) atau Nginx
-* **Bahasa Pemrograman:** PHP versi 8.0 ke atas
-* **Ekstensi PHP:** `php-xml`, `php-mbstring`, `php-gd`, `php-zip`, `php-curl`, `php-intl`
-* **Basis Data:** Tidak memerlukan server basis data SQL (Flat-file engine)
+- Sistem Operasi: Linux (Ubuntu Server 22.04 / 24.04 LTS) atau container Docker di Dokploy
+- Web Server: Apache 2.4 atau Nginx
+- Bahasa Pemrograman: PHP versi 8.0 ke atas
+- Ekstensi PHP: `php-xml`, `php-mbstring`, `php-gd`, `php-zip`, `php-curl`, `php-intl`
+- Basis Data: Tidak memerlukan database SQL
 
----
+### Cara 1: Instalasi Menggunakan Docker Compose (Dokploy)
+Repositori ini menyediakan berkas `docker-compose.yml` untuk mempermudah proses deployment:
 
-### Cara 1: Instalasi Menggunakan Docker Compose (Dokploy / VPS)
-
-Repositori ini menyediakan berkas [`docker-compose.yml`](docker-compose.yml) untuk deployment cepat dan terisolasi:
-
-1. Clone repositori ke VPS atau hubungkan ke Dokploy:
+1. Clone repositori ke server atau hubungkan ke Dokploy:
    ```bash
    git clone https://github.com/NaufalIndraR/dokuwiki_kelompok10.git
    cd dokuwiki_kelompok10
    ```
 
-2. Jalankan container:
+2. Jalankan service menggunakan Docker Compose:
    ```bash
    docker compose up -d
    ```
 
-3. Akses antarmuka instalasi DokuWiki melalui peramban:
+3. Buka peramban dan akses alamat server:
    ```text
-   http://<IP-VPS-ANDA>:8080/install.php
+   http://<IP-SERVER>:8080/install.php
    ```
 
-4. Isi formulir instalasi awal (nama wiki, kredensial administrator, dan kebijakan ACL), lalu simpan.
+4. Lengkapi formulir setup awal (nama wiki, akun admin, serta kebijakan ACL), lalu simpan.
 
 ---
 
-### Cara 2: Instalasi Otomatis CLI Ubuntu Server (`setup.sh`)
+### Cara 2: Instalasi Manual CLI di Ubuntu Server (Native Apache2)
 
-Kami menyediakan skrip instalasi satu perintah [`setup.sh`](setup.sh) yang mengotomasi seluruh konfigurasi dari awal:
+Langkah-langkah instalasi manual pada sistem operasi Ubuntu Server:
 
-1. Clone repositori ke server Ubuntu:
-   ```bash
-   git clone https://github.com/NaufalIndraR/dokuwiki_kelompok10.git
-   cd dokuwiki_kelompok10
-   ```
-
-2. Jalankan skrip dengan hak akses root:
-   ```bash
-   sudo bash setup.sh
-   ```
-
-3. Masukkan domain atau IP server saat diminta. Skrip akan otomatis mengonfigurasi Apache, mengunduh rilis resmi DokuWiki, mengatur *permission*, memuat modul praktikum, dan membuat VirtualHost.
-
----
-
-### Cara 3: Langkah Instalasi Manual CLI (Native Apache2)
-
-Jika ingin melakukan konfigurasi bertahap secara manual di Ubuntu Server:
-
-1. Perbarui indeks repositori sistem:
+1. Perbarui repositori sistem:
    ```bash
    sudo apt update && sudo apt upgrade -y
    ```
 
-2. Pasang Apache2 dan alat pendukung:
+2. Install web server Apache2 dan peralatan pendukung:
    ```bash
    sudo apt install -y apache2 libapache2-mod-php curl wget tar
    ```
 
-3. Pasang PHP dan ekstensi pendukung yang diwajibkan:
+3. Install PHP beserta pustaka ekstensi yang dibutuhkan DokuWiki:
    ```bash
    sudo apt install -y php php-cli php-gd php-xml php-mbstring php-zip php-curl php-intl
    ```
 
-4. Unduh rilis resmi stabil DokuWiki terbaru:
+4. Unduh rilis stabil resmi DokuWiki:
    ```bash
    cd /tmp
    wget https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
    ```
 
-5. Ekstrak ke direktori web root `/var/www/dokuwiki`:
+5. Ekstrak berkas ke direktori web `/var/www/dokuwiki`:
    ```bash
    sudo mkdir -p /var/www/dokuwiki
    sudo tar -xzf dokuwiki-stable.tgz -C /var/www/dokuwiki --strip-components=1
    ```
 
-6. Salin konten modul praktikum ke direktori data:
-   ```bash
-   sudo cp -r /path/to/dokuwiki_kelompok10/sample-content/* /var/www/dokuwiki/data/pages/
-   ```
-
-7. Atur kepemilikan dan hak akses berkas:
+6. Atur izin kepemilikan berkas untuk pengguna web server (`www-data`):
    ```bash
    sudo chown -R www-data:www-data /var/www/dokuwiki
-   sudo find /var/www/dokuwiki -type d -exec chmod 755 {} \;
-   sudo find /var/www/dokuwiki -type f -exec chmod 644 {} \;
    sudo chmod -R 775 /var/www/dokuwiki/data
    sudo chmod -R 775 /var/www/dokuwiki/conf
    sudo chmod -R 775 /var/www/dokuwiki/lib/plugins
    sudo chmod -R 775 /var/www/dokuwiki/lib/tpl
    ```
 
-8. Buat konfigurasi VirtualHost Apache (`/etc/apache2/sites-available/dokuwiki.conf`):
+7. Aktifkan modul `rewrite` Apache:
+   ```bash
+   sudo a2enmod rewrite
+   ```
+
+8. Buat berkas konfigurasi VirtualHost Apache:
+   ```bash
+   sudo nano /etc/apache2/sites-available/dokuwiki.conf
+   ```
+
+   Tambahkan konfigurasi berikut:
    ```apache
    <VirtualHost *:80>
        ServerAdmin admin@localhost
@@ -165,7 +119,6 @@ Jika ingin melakukan konfigurasi bertahap secara manual di Ubuntu Server:
            Require all granted
        </Directory>
 
-       # Proteksi direktori privat
        <Directory /var/www/dokuwiki/data>
            Require all denied
        </Directory>
@@ -181,15 +134,14 @@ Jika ingin melakukan konfigurasi bertahap secara manual di Ubuntu Server:
    </VirtualHost>
    ```
 
-9. Aktifkan modul `rewrite`, aktifkan virtualhost, dan reload web server:
+9. Aktifkan situs VirtualHost dan reload Apache:
    ```bash
-   sudo a2enmod rewrite
    sudo a2ensite dokuwiki.conf
    sudo a2dissite 000-default.conf
    sudo systemctl reload apache2
    ```
 
-10. Buka `http://<IP-SERVER>/install.php` untuk menyelesaikan inisialisasi awal, lalu amankan berkas installer:
+10. Buka browser ke `http://<IP-SERVER>/install.php` untuk menyelesaikan inisialisasi awal. Setelah selesai, hapus file installer demi alasan keamanan:
     ```bash
     sudo rm -f /var/www/dokuwiki/install.php
     ```
@@ -199,82 +151,75 @@ Jika ingin melakukan konfigurasi bertahap secara manual di Ubuntu Server:
 ## 3. Konfigurasi
 
 ### Penyesuaian Batas Upload dan Memori PHP
-Untuk mendukung pengunggahan modul praktikum dan diagram topologi jaringan berukuran besar, sesuaikan `/etc/php/8.x/apache2/php.ini`:
+Untuk menunjang pengunggahan berkas modul praktikum berukuran lebih besar, sesuaikan pengaturan pada `php.ini`:
+
+```bash
+sudo nano /etc/php/8.x/apache2/php.ini
+```
+
+Sesuaikan nilai-nilai berikut:
 ```ini
 upload_max_filesize = 32M
 post_max_size = 32M
 memory_limit = 256M
 max_execution_time = 120
 ```
-Terapkan perubahan dengan me-restart Apache:
+
+Terapkan perubahan dengan me-restart web server:
 ```bash
 sudo systemctl restart apache2
 ```
 
-### Mengaktifkan Clean URLs (Nice URLs)
-Agar tautan dokumen rapi tanpa parameter `doku.php?id=`:
-1. Masuk ke menu **Admin** -> **Configuration Settings**.
-2. Pada opsi **Advanced**, atur parameter `userewrite` ke `Apache .htaccess` (nilai `1`).
-3. Pastikan berkas `.htaccess` telah aktif di server:
+### Mengaktifkan Nice URLs (Clean URLs)
+Agar URL halaman wiki menjadi lebih bersih (tanpa parameter `doku.php?id=`):
+1. Masuk ke DokuWiki sebagai Admin -> pilih menu **Admin** -> **Configuration Settings**.
+2. Pada bagian **Advanced**, ubah opsi `userewrite` menjadi `Apache .htaccess` (nilai `1`).
+3. Pastikan berkas `.htaccess` sudah aktif di server:
    ```bash
    cd /var/www/dokuwiki
    sudo cp .htaccess.dist .htaccess
    ```
 
-### Pengaturan Hak Akses (Access Control List - ACL)
-Pengaturan ACL diterapkan secara terstruktur pada berkas `conf/acl.auth.php`:
-* **Pengunjung Publik (`@ALL`):** Izin membaca (*Read-only*) pada seluruh modul praktikum umum.
-* **Akun Mahasiswa (`@user`):** Izin membaca, menyunting, dan membuat dokumen (*Read, Edit, Create, Upload*).
-* **Administrator (`@admin`):** Hak kendali penuh terhadap manajemen user, plugin, dan konfigurasi sistem (*Full Admin & Delete*).
+### Pengaturan Hak Akses (ACL)
+Pengelolaan hak akses dilakukan melalui menu **Admin** -> **Access Control List Management**:
+- Pengunjung tanpa login (@ALL): Diberikan izin hanya membaca (Read).
+- Akun mahasiswa (@user): Diberikan izin membaca dan mengedit halaman (Read & Edit).
+- Administrator (@admin): Diberikan hak akses penuh pengelolaan wiki.
 
-### Daftar Akun Siap Pakai (Pre-configured Accounts)
-Sistem telah dilengkapi berkas akun terenkripsi bcrypt pada `conf/users.auth.php`:
-
-| Username | Nama Lengkap | Group | Password Default | Hak Akses |
-| :--- | :--- | :--- | :--- | :--- |
-| **`admin`** | Administrator Lab Komdat | `@admin, @user` | `AdminKomdat10!` | Full Superuser & Admin Panel |
-| **`naufal`** | Naufal Indra Rizky | `@admin, @user` | `AdminKomdat10!` | Full Superuser & Admin Panel |
-| **`nawra`** | Nawra Ghaya Tsabita | `@user` | `AdminKomdat10!` | Editor Praktikum (Read & Edit) |
-| **`farhan`** | Muhammad Farhan Assafari | `@user` | `AdminKomdat10!` | Editor Praktikum (Read & Edit) |
-| **`aulia`** | Muhammad Aulia Alfarisi | `@user` | `AdminKomdat10!` | Editor Praktikum (Read & Edit) |
-
-### Ekstensi & Plugin Tambahan
-Beberapa plugin yang dapat diinstal melalui menu **Admin** -> **Extension Manager**:
-* **Markdowku:** Memungkinkan penulisan dokumen menggunakan format Markdown standar.
-* **Bootstrap3 Template:** Mengubah tampilan wiki menjadi responsif dan modern.
-* **Tag Plugin:** Menambahkan taksonomi tagar untuk pengelompokan modul jaringan.
+### Plugin Tambahan
+Beberapa plugin yang dapat ditambahkan melalui menu **Admin** -> **Extension Manager**:
+- **Markdowku**: Memungkinkan penulisan dokumen menggunakan format Markdown standar selain sintaks bawaan DokuWiki.
+- **Bootstrap3 Template**: Mengubah tampilan antarmuka wiki menjadi lebih modern dan responsif untuk layar ponsel.
+- **Tag Plugin**: Memberikan fitur kategori/tagar pada setiap artikel untuk mempermudah pencarian topik.
 
 ---
 
 ## 4. Maintenance
 
-### Skrip Backup Otomatis (`backup.sh`)
-Pencadangan sistem DokuWiki cukup dilakukan dengan mengompresi folder data, konfigurasi, plugin, dan template tanpa membebani server dengan proses dump database.
+### Script Backup Otomatis
+Karena DokuWiki berbasis berkas teks biasa, proses pencadangan data cukup dilakukan dengan mengarsipkan folder `data`, `conf`, `lib/plugins`, dan `lib/tpl`. Repositori ini telah menyediakan script `backup.sh` untuk keperluan tersebut.
 
-Eksekusi manual:
+Perintah inti yang dijalankan oleh script:
 ```bash
-sudo bash backup.sh
+tar -czf /var/backups/dokuwiki/dokuwiki_backup_$(date +%Y%m%d_%H%M%S).tar.gz \
+    -C /var/www/dokuwiki data conf lib/plugins lib/tpl
 ```
 
-Isi perintah inti skrip:
-```bash
-tar -czf "$BACKUP_FILE" \
-    --exclude="${DOKUWIKI_DIR}/data/cache/*" \
-    -C "$DOKUWIKI_DIR" data conf lib/plugins lib/tpl
-```
+### Penjadwalan Backup Berkala (Cron Job)
+Untuk menjalankan proses backup secara terjadwal setiap malam pukul 02.00:
 
-### Penjadwalan Backup Terjadwal (Cron Job)
-Untuk menjadwalkan pencadangan otomatis setiap malam pukul 02.00 WIB:
-```bash
-sudo crontab -e
-```
-Tambahkan baris berikut:
-```cron
-0 2 * * * /bin/bash /var/www/dokuwiki/backup.sh > /dev/null 2>&1
-```
+1. Buka konfigurasi crontab:
+   ```bash
+   sudo crontab -e
+   ```
 
-### Prosedur Pemulihan (Disaster Recovery)
-Jika terjadi kerusakan sistem, pemulihan data dilakukan dengan mengekstrak kembali berkas arsip:
+2. Tambahkan baris jadwal berikut:
+   ```cron
+   0 2 * * * /bin/bash /var/www/dokuwiki/backup.sh > /dev/null 2>&1
+   ```
+
+### Prosedur Pemulihan (Restore)
+Jika terjadi kehilangan atau kerusakan data, pemulihan dilakukan dengan mengekstrak kembali file arsip backup:
 ```bash
 sudo tar -xzf /var/backups/dokuwiki/dokuwiki_backup_YYYYMMDD_HHMMSS.tar.gz -C /var/www/dokuwiki/
 sudo chown -R www-data:www-data /var/www/dokuwiki
@@ -282,56 +227,173 @@ sudo chown -R www-data:www-data /var/www/dokuwiki
 
 ---
 
-## 5. Pengisian Konten Aplikasi Web
+## 5. Otomatisasi
 
-Basis pengetahuan yang telah dimasukkan ke dalam DokuWiki bertema **Pusat Dokumentasi Laboratorium Komunikasi Data & Jaringan Komputer**:
+Repositori ini menyertakan dua skrip shell. Keduanya ditujukan untuk instalasi native di Ubuntu Server (Cara 2), bukan untuk container Docker.
 
-* **Halaman Utama (`start`):** Sambutan pengantar, navigasi modul, profil Kelompok 10, serta penjelasan arsitektur wiki.
-* **Modul 1 (`komdat:topologi`):** Desain topologi jaringan bintang hierarkis laboratorium, perhitungan subnetting VLSM `192.168.10.0/24`, dan konfigurasi sub-interface VLAN 802.1Q di Linux.
-* **Modul 2 (`komdat:routing`):** Pengaktifan forwarding kernel Linux, static routing multi-hop, dan implementasi routing dinamis OSPF Area 0 menggunakan FRRouting.
-* **Modul 3 (`komdat:layanan`):** Konfigurasi server DNS otoritatif BIND9 (`labkomdat.ipb.ac.id`), DHCP Server ISC-DHCP, dan Web Server internal.
-* **Modul 4 (`komdat:keamanan`):** Konfigurasi firewall stateful UFW/iptables, SSH Key Authentication pada port kustom 2222, dan sistem mitigasi brute-force Fail2Ban.
+### setup.sh
+
+Skrip ini memasang DokuWiki dari awal. Jalankan dari dalam folder repositori, karena skrip membaca folder `sample-content` di direktori yang sedang aktif:
+
+```bash
+sudo bash setup.sh
+```
+
+Skrip menanyakan domain atau alamat IP server, lalu mengerjakan tujuh tahap berurutan:
+
+1. Memperbarui daftar paket Ubuntu.
+2. Memasang Apache2.
+3. Memasang PHP beserta ekstensi yang dibutuhkan.
+4. Mengunduh rilis stabil DokuWiki.
+5. Mengekstrak ke `/var/www/dokuwiki`, lalu menyalin halaman, konfigurasi, dan akun dari `sample-content` bila folder itu ada.
+6. Mengatur kepemilikan dan izin berkas.
+7. Membuat VirtualHost Apache, mengaktifkan `mod_rewrite`, dan menyesuaikan batas upload dan memori PHP (nilainya sama dengan bagian Konfigurasi).
+
+Setelah selesai, skrip menampilkan alamat `install.php` dan mengingatkan agar file itu dihapus.
+
+<!-- SCREENSHOT: terminal setelah setup.sh selesai (pesan "INSTALASI DOKUWIKI BERHASIL DISELESAIKAN!") | img/01-setup-selesai.png -->
+![Hasil menjalankan setup.sh](img/01-setup-selesai.png)
+
+### backup.sh
+
+Skrip ini mengarsipkan folder `data`, `conf`, `lib/plugins`, dan `lib/tpl` dari `/var/www/dokuwiki` menjadi berkas `/var/backups/dokuwiki/dokuwiki_backup_<waktu>.tar.gz`, lalu menghapus arsip yang umurnya lebih dari 14 hari. Jalankan manual dengan `sudo bash backup.sh`, atau terjadwal lewat cron seperti pada bagian Maintenance.
+
+<!-- SCREENSHOT: hasil perintah "ls -lh /var/backups/dokuwiki" yang menampilkan file arsip backup | img/02-hasil-backup.png -->
+![Berkas hasil backup](img/02-hasil-backup.png)
 
 ---
 
-## 6. Perbandingan dengan Aplikasi Sejenis
+## 6. Cara Pemakaian
 
-Sesuai aturan projek yang mewajibkan komparasi dengan aplikasi/situs web asli terkemuka:
+Bagian ini menjelaskan fitur utama DokuWiki sesuai konfigurasi pada repositori ini. Bahasa antarmuka diatur ke bahasa Indonesia (`conf/local.php`), jadi nama tombol dan menu bisa sedikit berbeda dari istilah yang dipakai di sini.
 
-| Parameter Evaluasi | DokuWiki (Pilihan Kelompok 10) | MediaWiki (Mesin Wikipedia) | BookStack |
-| :--- | :--- | :--- | :--- |
-| **Arsitektur Penyimpanan** | **Flat-File (`.txt`)** | Database Relasional SQL (MySQL/MariaDB) | Database Relasional SQL (MySQL/MariaDB) |
-| **Kebutuhan Database** | **Tidak Membutuhkan SQL** | Wajib MySQL / MariaDB | Wajib MySQL / MariaDB |
-| **Konsumsi Memori RAM** | **Sangat Rendah (< 64 MB)** | Tinggi (> 256 MB) | Sedang (~128 - 256 MB) |
-| **Metode Pencadangan** | **Cukup arsip berkas folder (tar)** | Dump basis data SQL + backup berkas media | Dump basis data SQL + direktori upload |
-| **Format Penulisan** | DokuWiki Markup & Markdown | Wikitext Markup | WYSIWYG Editor & Markdown |
-| **Struktur Organisasi** | Namespace hierarkis tanpa batas | Kategori & namespace datar | Hierarki kaku: Rak > Buku > Bab > Halaman |
-| **Toleransi Kegagalan** | **Tinggi (kebal crash DB)** | Bergantung pada ketersediaan daemon SQL | Bergantung pada ketersediaan daemon SQL |
-| **Kompleksitas Setup** | Sangat cepat (langsung siap pakai) | Rumit (migrasi tabel SQL & dependensi) | Sedang (migrasi Laravel & dependensi Composer) |
+### 1. Membuka wiki
 
-### Pembahasan Analisis Komparasi:
-1. **Dibandingkan dengan MediaWiki:**
-   MediaWiki dirancang untuk kebutuhan ensiklopedia publik berskala masif (seperti Wikipedia) dengan jutaan halaman dan pengguna anonim. Namun, untuk sistem dokumentasi laboratorium atau tim teknis internal, kompleksitas instalasi dan beban pemeliharaan database MySQL pada MediaWiki menjadikannya kurang efisien dibandingkan DokuWiki yang ringan dan minim perawatan.
-2. **Dibandingkan dengan BookStack:**
-   BookStack menawarkan antarmuka modern menyerupai buku fisik, namun membatasi pengorganisasian konten pada hierarki tetap (*Shelf > Book > Chapter > Page*). Sebaliknya, sistem *namespace* DokuWiki memberikan fleksibilitas tanpa batas bagi modul-modul praktikum yang memiliki banyak sub-cabang materi.
-3. **Kesimpulan Komparasi:**
-   DokuWiki terbukti menjadi pilihan paling seimbang antara kemudahan pemeliharaan, keandalan tanpa database terpisah, dan efisiensi konsumsi sumber daya komputasi.
+Buka alamat wiki di peramban. Halaman pertama yang tampil adalah `start`, berisi pengantar dan daftar empat modul praktikum. Kotak pencarian dan tautan Perubahan terbaru, Pengelola Media, serta Indeks ada di bagian atas halaman, dan tautan modul di halaman utama membawa pengguna ke namespace `komdat`.
+
+<!-- SCREENSHOT: halaman utama (start) saat belum login | img/03-halaman-utama.png -->
+![Halaman utama wiki](img/03-halaman-utama.png)
+
+### 2. Login dan perbedaan hak akses
+
+Pendaftaran mandiri dinonaktifkan (`disableactions = register`), jadi akun dibuat oleh admin. Akun yang sudah disiapkan di `conf/users.auth.php` adalah `admin`, `naufal`, `nawra`, `farhan`, dan `aulia`. Pengunjung yang belum login hanya bisa membaca. Setelah login, akun grup `user` bisa menyunting halaman dan mengunggah berkas, sedangkan akun grup `admin` juga bisa membuka menu Admin.
+
+<!-- SCREENSHOT: halaman login | img/04-login.png -->
+![Halaman login](img/04-login.png)
+
+<!-- SCREENSHOT: tampilan setelah login sebagai admin, menu Admin terlihat | img/05-setelah-login.png -->
+![Tampilan setelah login sebagai admin](img/05-setelah-login.png)
+
+### 3. Membuat dan menyunting halaman
+
+Klik tombol sunting (ikon pensil) pada halaman, ubah isinya, lalu simpan. DokuWiki memakai sintaksnya sendiri, misalnya:
+
+```text
+====== Judul Halaman ======
+**teks tebal**, //teks miring//
+  * butir daftar
+[[komdat:routing|tautan ke modul routing]]
+
+^ Kolom A ^ Kolom B ^
+| isi 1    | isi 2    |
+```
+
+<!-- SCREENSHOT: halaman dalam mode sunting dengan toolbar editor | img/06-sunting-halaman.png -->
+![Mode sunting halaman](img/06-sunting-halaman.png)
+
+### 4. Namespace
+
+Halaman dikelompokkan dengan namespace yang dipisah titik dua. Pada wiki ini ada `komdat:topologi`, `komdat:routing`, `komdat:layanan`, dan `komdat:keamanan`. Halaman baru dibuat dengan menulis tautan ke nama halaman yang belum ada, lalu mengeklik tautan itu.
+
+<!-- SCREENSHOT: salah satu halaman modul, misalnya komdat:topologi | img/07-halaman-modul.png -->
+![Contoh halaman modul](img/07-halaman-modul.png)
+
+### 5. Riwayat revisi
+
+Setiap penyimpanan menghasilkan revisi baru. Lewat ikon riwayat (gambar jam) di panel sisi kanan halaman, pengguna bisa melihat daftar revisi, membandingkan dua versi (diff), dan mengembalikan versi sebelumnya.
+
+<!-- SCREENSHOT: halaman riwayat revisi atau tampilan diff antara dua revisi | img/08-riwayat-revisi.png -->
+![Riwayat revisi dan diff](img/08-riwayat-revisi.png)
+
+### 6. Mengunggah gambar dan berkas
+
+Menu **Pengelola Media** (Media Manager), di bagian kanan atas halaman, dipakai untuk mengunggah gambar atau berkas lalu menyisipkannya ke halaman. Hanya akun yang sudah login (grup `user` atau `admin`) yang punya izin unggah. Batas ukuran file mengikuti pengaturan PHP pada bagian Konfigurasi.
+
+<!-- SCREENSHOT: Media Manager dengan satu berkas terunggah | img/09-media-manager.png -->
+![Media Manager](img/09-media-manager.png)
+
+### 7. Mengatur hak akses (ACL)
+
+Menu **Admin** → **Access Control List Management** dipakai untuk melihat dan mengubah izin. Aturan awal repositori ini (`conf/acl.auth.php`), yang berlaku sama untuk seluruh wiki dan namespace `komdat`:
+
+| Kelompok | Izin tertinggi |
+| --- | --- |
+| `@ALL` (semua pengunjung) | Baca |
+| `@user` | Unggah (mencakup baca, sunting, dan buat) |
+| `@admin` | Hapus (izin penuh) |
+
+Tingkat izin pada DokuWiki bersifat bertingkat: izin yang lebih tinggi sudah mencakup yang lebih rendah. Menu Admin hanya terbuka bagi grup `admin`, yang ditetapkan sebagai superuser di `conf/local.php`.
+
+<!-- SCREENSHOT: halaman Access Control List Management | img/10-acl.png -->
+![Pengaturan ACL](img/10-acl.png)
+
+### Isi Konten Contoh
+
+Dokumentasi yang dimasukkan ke dalam DokuWiki bertema pusat informasi laboratorium jaringan:
+- **Halaman Utama (start)**: Pengenalan basis pengetahuan, navigasi modul, dan informasi Kelompok 10.
+- **Modul 1 (komdat:topologi)**: Desain topologi jaringan laboratorium, subnetting IPv4, dan pemisahan VLAN.
+- **Modul 2 (komdat:routing)**: Konfigurasi rute jaringan statik serta protokol dinamis (OSPF dan RIP).
+- **Modul 3 (komdat:layanan)**: Panduan konfigurasi layanan server Linux (DNS BIND9, DHCP Server, dan Web Server).
+- **Modul 4 (komdat:keamanan)**: Penerapan aturan firewall (iptables/UFW) dan pengamanan port SSH.
 
 ---
 
-## 7. Slide Presentasi (PPT)
+## 7. Perbandingan dengan Aplikasi Sejenis
 
-Materi presentasi untuk demonstrasi pekan ke-7 tersedia dalam dua format siap pakai:
-1. **Slide Interaktif Web:** Buka berkas [`presentasi.html`](presentasi.html) di peramban web.
-   * Dilengkapi navigasi keyboard (`◀` / `▶`), layar penuh (`F`), dan optimasi cetak PDF lanskap (`Ctrl + P`).
-2. **Slide Markdown (Marp):** [`PRESENTASI.md`](PRESENTASI.md) dapat langsung dibuka atau diekspor menggunakan ekstensi VS Code Marp atau CLI.
+Berikut perbandingan DokuWiki dengan aplikasi wiki dan dokumentasi self-hosted lainnya:
+
+| Parameter | DokuWiki | MediaWiki | BookStack |
+| --- | --- | --- | --- |
+| Bahasa / Framework | PHP Native | PHP Native | PHP (Laravel) |
+| Kebutuhan Database | Tidak ada (Flat-file `.txt`) | Wajib (MySQL / MariaDB) | Wajib (MySQL / MariaDB) |
+| Konsumsi RAM | Sangat rendah (< 64 MB) | Tinggi (karena dependensi MySQL) | Sedang (~256 - 512 MB) |
+| Metode Backup | Cukup copy/tar folder data | Dump database SQL + backup media | Dump database SQL + folder file |
+| Format Penulisan | DokuWiki markup, Markdown | Wikitext markup | WYSIWYG editor & Markdown |
+| Pengorganisasian | Namespace (hierarki direktori) | Kategori dan link internal | Hierarki Buku, Bab, Halaman |
+| Kemudahan Setup | Sangat cepat (langsung jalan) | Memerlukan migrasi database | Memerlukan migrasi Laravel & database |
+
+### Kelebihan dan Kekurangan
+
+Berdasarkan dokumentasi resmi DokuWiki dan konfigurasi yang kami pakai pada repositori ini:
+
+**Kelebihan**
+- Tidak memerlukan database. Seluruh halaman, revisi, dan konfigurasi tersimpan sebagai berkas, sehingga backup cukup dengan mengarsipkan folder (lihat `backup.sh`).
+- Riwayat revisi, perbandingan versi, dan pemulihan sudah tersedia tanpa plugin tambahan.
+- Pengaturan hak akses (ACL) dan manajemen pengguna sudah tersedia bawaan.
+- Fungsi tambahan, termasuk dukungan Markdown, dapat ditambahkan lewat plugin.
+
+**Kekurangan**
+- Memakai sintaks sendiri. Markdown tidak didukung secara bawaan dan perlu plugin.
+- Editor bawaan berbasis teks dengan toolbar, bukan editor visual (WYSIWYG).
+- Tampilan bawaan sederhana, sehingga tampilan yang lebih modern memerlukan template tambahan.
+- Akun pengguna disimpan di berkas teks (`conf/users.auth.php`). Untuk jumlah pengguna yang besar perlu beralih ke backend otentikasi lain seperti LDAP atau database lewat plugin otentikasi.
+
+**Catatan deployment pada repositori ini**
+- `docker-compose.yml` memakai image `lscr.io/linuxserver/dokuwiki`, lalu me-mount konfigurasi (`local.php`, `users.auth.php`, `acl.auth.php`) dan halaman contoh dari repositori.
+- Compose mendeklarasikan jaringan eksternal `dokploy-network`. Di server tanpa Dokploy, jaringan itu harus dibuat lebih dulu (`docker network create dokploy-network`) agar `docker compose up -d` berjalan.
+- Layanan dipetakan ke port 8080 pada host.
+
+### Pembahasan
+DokuWiki sangat tepat untuk proyek praktikum dan dokumentasi internal tim kecil karena kesederhanaan arsitekturnya. Tidak adanya ketergantungan pada database SQL meminimalisir risiko kegagalan sistem akibat crash database. 
+
+Sebagai perbandingan, MediaWiki memiliki fitur yang sangat lengkap untuk komunitas raksasa terbuka seperti Wikipedia, namun relatif berat dan rumit untuk dokumentasi skala laboratorium. Sedangkan BookStack menawarkan antarmuka yang sangat rapi menyerupai buku fisik, namun membutuhkan pengaturan server dan database yang lebih kompleks.
 
 ---
 
 ## 8. Referensi
 
-1. Repositori Praktikum KDJK IPB: [auriza/komdat-lab](https://github.com/auriza/komdat-lab)
-2. Petunjuk Projek & Format Laporan: [auriza/komdat-lab/projek.md](https://github.com/auriza/komdat-lab/blob/master/projek.md) & [templat.md](https://github.com/auriza/komdat-lab/blob/master/templat.md)
-3. Kurasi Aplikasi Self-Hosted: [Awesome-Selfhosted (Wikis)](https://github.com/Kickball/awesome-selfhosted#wikis)
-4. Situs Resmi DokuWiki: [dokuwiki.org](https://www.dokuwiki.org/)
-5. Repositori Source Code DokuWiki: [github.com/dokuwiki/dokuwiki](https://github.com/dokuwiki/dokuwiki)
+1. Situs Resmi DokuWiki: https://www.dokuwiki.org/
+2. Dokumentasi Instalasi DokuWiki: https://www.dokuwiki.org/install
+3. Repositori Source Code DokuWiki: https://github.com/dokuwiki/dokuwiki
+4. Daftar Aplikasi Self-Hosted: https://github.com/Kickball/awesome-selfhosted#wikis
+5. Templat Laporan Praktikum Komdat: https://github.com/auriza/komdat-lab/blob/master/templat.md
