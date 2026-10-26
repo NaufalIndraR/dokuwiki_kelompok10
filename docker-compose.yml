@@ -1,10 +1,5 @@
 version: '3.8'
 
-# ==============================================================================
-# Docker Compose untuk DokuWiki (Alternatif Pengujian Cepat Lokal)
-# Proyek Praktikum Komunikasi Data - CS IPB
-# ==============================================================================
-
 services:
   kelompok10-dokuwiki:
     image: lscr.io/linuxserver/dokuwiki:latest

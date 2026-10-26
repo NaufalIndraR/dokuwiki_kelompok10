@@ -1,0 +1,16 @@
+Kedves @FULLNAME@!
+
+A(z) @TITLE@ c. wiki
+@PAGE@ c. oldala megváltozott.
+Az eltérések alább olvashatók:
+
+--------------------------------------------------------
+@DIFF@
+--------------------------------------------------------
+
+Korábbi változat: @OLDPAGE@
+Jelenlegi változat: @NEWPAGE@
+
+Ha nem szeretnél további értesítéseket kapni erről az oldalról, akkor
+jelentkezz be a következő oldalon: @DOKUWIKIURL@;
+ezt követően itt iratkozhatsz le: @SUBSCRIBE@.

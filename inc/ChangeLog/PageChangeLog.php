@@ -1,0 +1,86 @@
+<?php
+
+namespace dokuwiki\ChangeLog;
+
+/**
+ * Class PageChangeLog; handles changelog of a wiki page
+ */
+class PageChangeLog extends ChangeLog
+{
+    /**
+     * Returns path to changelog
+     *
+     * @return string path to file
+     */
+    protected function getChangelogFilename()
+    {
+        return metaFN($this->id, '.changes');
+    }
+
+    /**
+     * Returns path to current page/media
+     *
+     * @param string|int $rev empty string or revision timestamp
+     * @return string path to file
+     */
+    protected function getFilename($rev = '')
+    {
+        return wikiFN($this->id, $rev);
+    }
+
+    /**
+     * Returns mode
+     *
+     * @return string RevisionInfo::MODE_PAGE
+     */
+    protected function getMode()
+    {
+        return RevisionInfo::MODE_PAGE;
+    }
+
+    /**
+     * Returns path to the global page-changelog file
+     *
+     * @return string path to file
+     */
+    protected function getGlobalChangelogFilename()
+    {
+        global $conf;
+        return $conf['changelog'];
+    }
+
+    /**
+     * Snapshot the externally-edited page to the attic at the synthesized revision date. Pages
+     * archive every revision, so the current (externally-changed) content is copied too.
+     *
+     * @param array $revInfo synthesized revision info
+     * @return bool true on success (or nothing to copy), false if the attic write failed
+     */
+    protected function saveExternalAttic(array $revInfo)
+    {
+        $file = $this->getFilename();
+        if (!file_exists($file)) return true;
+
+        $atticfile = $this->getFilename($revInfo['date']);
+        return io_writeWikiPage($atticfile, io_readWikiPage($file, $this->id, ''), $this->id, $revInfo['date']);
+    }
+
+    /**
+     * Compare the current page content against the (gzip-aware) attic copy of a revision.
+     *
+     * Both sides are already loaded (and decompressed) into memory by io_readWikiPage, so
+     * they are compared directly rather than via a hash: the string comparison stops at the
+     * first differing byte and avoids hashing the full contents.
+     *
+     * @param int $rev revision timestamp to compare the current page against
+     * @return bool true if the decompressed content is identical
+     */
+    protected function currentContentMatchesRevision($rev)
+    {
+        $current = $this->getFilename();
+        $attic = $this->getFilename($rev);
+        if (!file_exists($current) || !file_exists($attic)) return false;
+
+        return io_readWikiPage($current, $this->id, '') === io_readWikiPage($attic, $this->id, $rev);
+    }
+}

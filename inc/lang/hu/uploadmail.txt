@@ -1,0 +1,10 @@
+Fájlt töltöttek fel a DokuWikidre. Részletek:
+
+Állomány: @MEDIA@
+Dátum: @DATE@
+Böngésző: @BROWSER@
+IP-cím: @IPADDRESS@
+Számítógép neve: @HOSTNAME@
+Méret: @SIZE@
+MIME-típus: @MIME@
+Felhasználónév: @USER@

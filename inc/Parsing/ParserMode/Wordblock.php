@@ -1,0 +1,60 @@
+<?php
+
+namespace dokuwiki\Parsing\ParserMode;
+
+use dokuwiki\Parsing\Handler;
+use dokuwiki\Parsing\Lexer\Lexer;
+
+/**
+ * @fixme is this actually used?
+ */
+class Wordblock extends AbstractMode
+{
+    protected $badwords = [];
+    protected $pattern = '';
+
+    /**
+     * Wordblock constructor.
+     * @param $badwords
+     */
+    public function __construct($badwords)
+    {
+        $this->badwords = $badwords;
+    }
+
+    /** @inheritdoc */
+    public function getSort()
+    {
+        return 250;
+    }
+
+    /** @inheritdoc */
+    public function preConnect()
+    {
+
+        if (count($this->badwords) == 0 || $this->pattern != '') {
+            return;
+        }
+
+        $sep = '';
+        foreach ($this->badwords as $badword) {
+            $this->pattern .= $sep . '(?<=\b)(?i)' . Lexer::escape($badword) . '(?-i)(?=\b)';
+            $sep = '|';
+        }
+    }
+
+    /** @inheritdoc */
+    public function connectTo($mode)
+    {
+        if ((string) $this->pattern !== '') {
+            $this->Lexer->addSpecialPattern($this->pattern, $mode, 'wordblock');
+        }
+    }
+
+    /** @inheritdoc */
+    public function handle($match, $state, $pos, Handler $handler)
+    {
+        $handler->addCall('wordblock', [$match], $pos);
+        return true;
+    }
+}

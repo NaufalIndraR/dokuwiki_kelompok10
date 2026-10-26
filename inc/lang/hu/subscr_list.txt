@@ -1,0 +1,13 @@
+Kedves @FULLNAME@!
+
+A(z) @TITLE@ c. wiki
+@PAGE@ névterében oldalak változtak meg.
+A megváltozott oldalak:
+
+--------------------------------------------------------
+@DIFF@
+--------------------------------------------------------
+
+Ha nem szeretnél további értesítéseket kapni erről az oldalról, akkor
+jelentkezz be a következő oldalon: @DOKUWIKIURL@;
+ezt követően itt iratkozhatsz le: @SUBSCRIBE@.

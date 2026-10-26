@@ -1,0 +1,95 @@
+<?php
+
+namespace dokuwiki;
+
+use dokuwiki\Extension\Event;
+
+class Manifest
+{
+    public function sendManifest()
+    {
+        $manifest = retrieveConfig('manifest', 'jsonToArray');
+
+        global $conf;
+
+        $manifest['scope'] = DOKU_REL;
+
+        if (empty($manifest['name'])) {
+            $manifest['name'] = html_entity_decode(
+                strip_tags($conf['title']),
+                ENT_QUOTES | ENT_HTML5,
+                'UTF-8'
+            );
+        }
+
+        if (empty($manifest['short_name'])) {
+            $manifest['short_name'] = html_entity_decode(
+                strip_tags($conf['title']),
+                ENT_QUOTES | ENT_HTML5,
+                'UTF-8'
+            );
+        }
+
+        if (empty($manifest['description'])) {
+            $manifest['description'] = html_entity_decode(
+                strip_tags($conf['tagline']),
+                ENT_QUOTES | ENT_HTML5,
+                'UTF-8'
+            );
+        }
+
+        if (empty($manifest['start_url'])) {
+            $manifest['start_url'] = DOKU_REL;
+        }
+
+        $styleUtil = new StyleUtils();
+        $styleIni = $styleUtil->cssStyleini();
+        $replacements = $styleIni['replacements'];
+
+        if (empty($manifest['background_color'])) {
+            $manifest['background_color'] = $replacements['__background__'];
+        }
+
+        if (empty($manifest['theme_color'])) {
+            $manifest['theme_color'] = empty($replacements['__theme_color__'])
+                ? $replacements['__background_alt__']
+                : $replacements['__theme_color__'];
+        }
+
+        if (empty($manifest['icons'])) {
+            $manifest['icons'] = [];
+            if (file_exists(mediaFN(':wiki:favicon.ico'))) {
+                $url = ml(':wiki:favicon.ico', '', true, '', true);
+                $manifest['icons'][] = [
+                    'src' => $url,
+                    'sizes' => '16x16',
+                ];
+            }
+
+            $look = [
+                ':wiki:logo.svg',
+                ':logo.svg',
+                ':wiki:dokuwiki.svg'
+            ];
+
+            foreach ($look as $svgLogo) {
+                $svgLogoFN = mediaFN($svgLogo);
+
+                if (file_exists($svgLogoFN)) {
+                    $url = ml($svgLogo, '', true, '', true);
+                    $manifest['icons'][] = [
+                        'src' => $url,
+                        'sizes' => '17x17 512x512',
+                        'type' => 'image/svg+xml',
+                    ];
+                    break;
+                };
+            }
+        }
+
+        Event::createAndTrigger('MANIFEST_SEND', $manifest);
+
+        header('Content-Type: application/manifest+json');
+        echo json_encode($manifest, JSON_THROW_ON_ERROR);
+    }
+}

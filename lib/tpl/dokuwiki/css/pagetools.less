@@ -1,0 +1,123 @@
+/**
+ * This file provides the styles for the page tools
+ * (fly out navigation beside the page to edit, etc).
+ *
+ * @author Anika Henke <anika@selfthinker.org>
+ * @author Andreas Gohr <andi@splitbrain.org>
+ */
+
+@pagetools-ico-width: 1.75rem;
+@pagetools-ico-margin: 0.5rem;
+@pagetools-item-width: (@pagetools-ico-width + @pagetools-ico-margin + @pagetools-ico-margin);
+@pagetools-item-height: (@pagetools-ico-width + @pagetools-ico-margin);
+
+#dokuwiki__site > .site {
+    /* give space to the right so the tools won't disappear on smaller screens */
+    padding-right: @pagetools-item-width;
+    /* give the same space to the left to balance it out */
+    padding-left: @pagetools-item-width;
+}
+
+.dokuwiki div.page {
+    height: (@pagetools-item-height * 6 + @pagetools-ico-margin * 2);
+    min-height: (@pagetools-item-height * 6 + @pagetools-ico-margin * 2);
+    height: auto;
+}
+
+#dokuwiki__pagetools {
+    position: absolute;
+    right: (-1 * @pagetools-item-width);
+    /* on same vertical level as first headline, because .page has 2em padding */
+    top: 2em;
+    width: @pagetools-item-width;
+
+    div.tools {
+        position: fixed;
+        width: @pagetools-item-width;
+
+        ul {
+            position: absolute;
+            right: 0;
+            text-align: right;
+            margin: 0;
+            padding: 0;
+            /* add transparent border to prevent jumping when proper border is added on hover */
+            border: 1px solid transparent;
+            z-index: 10;
+
+            li {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+                font-size: 0.875em;
+
+                a {
+
+                    display: block;
+                    /* add transparent border to prevent jumping when proper border is added on focus */
+                    border: 1px solid transparent;
+                    white-space: nowrap;
+                    line-height: @pagetools-item-height;
+                    vertical-align: middle;
+                    height: @pagetools-item-height;
+
+                    span {
+                        display: none; // hide label until hover
+                        margin: 0 @pagetools-ico-margin;
+                    }
+
+                    svg {
+                        width: @pagetools-ico-width;
+                        height: @pagetools-ico-width;
+                        margin: 0 @pagetools-ico-margin;
+                        display: inline-block;
+                        vertical-align: middle;
+                        fill: @ini_border;
+                    }
+                }
+
+                // on interaction show the full item
+                a:active,
+                a:focus,
+                a:hover {
+                    background-color: @ini_background_alt;
+
+                    span {
+                        display: inline-block;
+                    }
+
+                    svg {
+                        fill: @ini_link;
+                    }
+                }
+            }
+        }
+    }
+
+    [dir=rtl] & {
+        right: auto;
+        left: (-1 * @pagetools-item-width);
+
+        div.tools {
+            ul {
+                right: auto;
+                left: 0;
+                text-align: left;
+            }
+        }
+    }
+}
+
+// on hover or focus show all items
+#dokuwiki__pagetools:hover, #dokuwiki__pagetools:focus-within {
+    div.tools ul {
+        background-color: @ini_background;
+        border-color: @ini_border;
+        border-radius: 2px;
+        box-shadow: 2px 2px 2px @ini_text_alt;
+
+        li a span {
+            display: inline-block;
+        }
+    }
+}

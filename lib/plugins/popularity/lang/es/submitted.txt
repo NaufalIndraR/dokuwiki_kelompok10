@@ -1,0 +1,3 @@
+====== Retroalimentación de popularidad ======
+
+Los datos se han enviado correctamente.

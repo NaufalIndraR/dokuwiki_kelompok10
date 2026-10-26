@@ -1,0 +1,434 @@
+<?php
+
+namespace dokuwiki\Search;
+
+use dokuwiki\Debug\DebugHelper;
+use dokuwiki\Extension\Event;
+use dokuwiki\Search\Collection\PageFulltextCollection;
+use dokuwiki\Search\Collection\PageMetaCollection;
+use dokuwiki\Search\Collection\PageTitleCollection;
+use dokuwiki\Search\Exception\IndexAccessException;
+use dokuwiki\Search\Exception\IndexIntegrityException;
+use dokuwiki\Search\Exception\IndexLockException;
+use dokuwiki\Search\Exception\IndexWriteException;
+use dokuwiki\Search\Index\FileIndex;
+use dokuwiki\Search\Index\Lock;
+use dokuwiki\Search\Index\MemoryIndex;
+
+// Version tag used to force rebuild on upgrade
+const INDEXER_VERSION = 9;
+
+/**
+ * Class DokuWiki Indexer
+ *
+ * Manages the page search index by delegating to Collection classes.
+ *
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author     Andreas Gohr <andi@splitbrain.org>
+ * @author Tom N Harris <tnharris@whoopdedo.org>
+ */
+class Indexer
+{
+    /** @var callable|null Logging callback, receives a string message */
+    protected $logger;
+
+    /**
+     * Set a logging callback
+     *
+     * The callback receives a single string message. Use this to integrate
+     * with different output mechanisms (TaskRunner echo, CLI output, Logger, etc.)
+     *
+     * @param callable $logger
+     * @return static
+     */
+    public function setLogger(callable $logger): static
+    {
+        $this->logger = $logger;
+        return $this;
+    }
+
+    /**
+     * Send a message to the registered logger
+     *
+     * @param string $message
+     */
+    protected function log(string $message): void
+    {
+        if ($this->logger)($this->logger)($message);
+    }
+
+    /**
+     * Version of the indexer taking into consideration the external tokenizer.
+     * The indexer is only compatible with data written by the same version.
+     *
+     * @triggers INDEXER_VERSION_GET
+     * Plugins that modify what gets indexed should hook this event and
+     * add their version info to the event data like so:
+     *     $data[$plugin_name] = $plugin_version;
+     *
+     * @return int|string
+     */
+    public function getVersion(): int|string
+    {
+        static $indexer_version = null;
+        if ($indexer_version == null) {
+            $version = INDEXER_VERSION;
+
+            $data = ['dokuwiki' => $version];
+            Event::createAndTrigger('INDEXER_VERSION_GET', $data, null, false);
+            unset($data['dokuwiki']); // this needs to be first
+            ksort($data);
+            foreach ($data as $plugin => $vers) {
+                $version .= '+' . $plugin . '=' . $vers;
+            }
+            $indexer_version = $version;
+        }
+        return $indexer_version;
+    }
+
+    /**
+     * Return a list of all indexed pages
+     *
+     * @param bool $existsFilter only return pages that exist on disk
+     * @return string[] list of page names (keys are the RIDs in the page index)
+     */
+    public function getAllPages(bool $existsFilter = false): array
+    {
+        $pageIndex = new MemoryIndex('page');
+        return array_filter(
+            iterator_to_array($pageIndex),
+            static fn($v) => $v !== '' && (!$existsFilter || page_exists($v, '', false))
+        );
+    }
+
+    /**
+     * Check if a page needs (re-)indexing
+     *
+     * @param string $page
+     * @param bool $force
+     * @return bool true if indexing is needed
+     */
+    public function needsIndexing(string $page, bool $force = false): bool
+    {
+        $idxtag = metaFN($page, '.indexed');
+        if ($force || !file_exists($idxtag)) return true;
+
+        if (trim(io_readFile($idxtag)) != $this->getVersion()) return true;
+
+        // the index tag is written when the page is indexed; the page only needs
+        // (re-)indexing if it was changed *after* that - an equal mtime means it was
+        // saved and indexed within the same second and is therefore up to date
+        $last = @filemtime($idxtag);
+        return $last < @filemtime(wikiFN($page));
+    }
+
+    /**
+     * Add/update the search index for a page
+     *
+     * Locking is handled internally.
+     *
+     * @param string $page The page to index
+     * @param bool $force force reindexing even when the index is up to date
+     *
+     * @return bool true if the page was indexed, false if there was nothing to do
+     * @throws IndexAccessException
+     * @throws IndexLockException
+     * @throws IndexWriteException
+     */
+    public function addPage(string $page, bool $force = false): bool
+    {
+        if (!$this->needsIndexing($page, $force)) {
+            $this->log("Indexer: index for $page up to date");
+            return false;
+        }
+
+        // create shared writable page index early so we can resolve the PID for plugins
+        $pageIndex = new FileIndex('page', '', true);
+
+        // prepare event data
+        $data = [
+            'page' => $page,
+            'body' => '',
+            'metadata' => [
+                'title' => p_get_metadata($page, 'title', METADATA_RENDER_UNLIMITED),
+                'relation_references' => array_keys(
+                    p_get_metadata($page, 'relation references', METADATA_RENDER_UNLIMITED) ?? []
+                ),
+                'relation_media' => array_keys(
+                    p_get_metadata($page, 'relation media', METADATA_RENDER_UNLIMITED) ?? []
+                ),
+                'internal_index' => p_get_metadata($page, 'internal index', METADATA_RENDER_UNLIMITED) !== false,
+            ],
+            'pid' => $pageIndex->accessCachedValue($page),
+        ];
+
+        // let plugins modify the data
+        $event = new Event('INDEXER_PAGE_ADD', $data);
+        if ($event->advise_before()) {
+            $data['body'] = $data['body'] . ' ' . rawWiki($data['page']);
+        }
+        $event->advise_after();
+        unset($event);
+
+        // index title
+        (new PageTitleCollection($pageIndex))->lock()
+            ->addEntity($data['page'], [$data['metadata']['title']])->unlock();
+        unset($data['metadata']['title']);
+
+        // index fulltext
+        if ($data['metadata']['internal_index']) {
+            $words = Tokenizer::getWords($data['body']);
+            (new PageFulltextCollection($pageIndex))->lock()->addEntity($data['page'], $words)->unlock();
+        } else {
+            $this->log("Indexer: full text indexing disabled for {$data['page']}");
+            // clear any previously stored fulltext data
+            (new PageFulltextCollection($pageIndex))->lock()->addEntity($data['page'], [])->unlock();
+        }
+        unset($data['metadata']['internal_index']);
+
+        // index metadata keys
+        foreach ($data['metadata'] as $key => $values) {
+            if (!is_array($values)) {
+                $values = ($values !== null && $values !== '') ? [$values] : [];
+            }
+            (new PageMetaCollection($key, $pageIndex))->lock()->addEntity($data['page'], $values)->unlock();
+        }
+
+        // update metadata registry
+        $this->updateMetadataRegistry(array_keys($data['metadata']));
+
+        // update index tag file
+        io_saveFile(metaFN($data['page'], '.indexed'), $this->getVersion());
+        $this->log("Indexer: finished indexing {$data['page']}");
+        return true;
+    }
+
+    /**
+     * Remove a page from the index
+     *
+     * Clears the page's data from all collections. The entity persists in page.idx.
+     *
+     * @param string $page The page to remove
+     * @param bool $force force deletion even when no .indexed tag exists
+     *
+     * @return bool true if the page was removed, false if there was nothing to do
+     * @throws IndexAccessException
+     * @throws IndexLockException
+     * @throws IndexWriteException
+     */
+    public function deletePage(string $page, bool $force = false): bool
+    {
+        $idxtag = metaFN($page, '.indexed');
+        if (!$force && !file_exists($idxtag)) {
+            $this->log("Indexer: $page.indexed file does not exist, ignoring");
+            return false;
+        }
+
+        $pageIndex = new FileIndex('page', '', true);
+
+        (new PageTitleCollection($pageIndex))->lock()->addEntity($page, [])->unlock();
+        (new PageFulltextCollection($pageIndex))->lock()->addEntity($page, [])->unlock();
+
+        foreach ($this->getMetadataRegistryKeys() as $key) {
+            (new PageMetaCollection($key, $pageIndex))->lock()->addEntity($page, [])->unlock();
+        }
+
+        $this->log("Indexer: deleted $page from index");
+        @unlink($idxtag);
+        return true;
+    }
+
+    /**
+     * Rename a page in the search index
+     *
+     * This renames the page's entity entry in place: its entity ID (the row in the
+     * page index) is kept and only its name is changed. Because every collection
+     * (title, fulltext and all metadata keys such as relation_references) is keyed by
+     * that entity ID, all token, frequency and reverse associations are preserved and
+     * transparently belong to the new name afterwards.
+     *
+     * In particular this keeps the renamed page's *outgoing* references intact. That is
+     * essential during multi-step operations such as namespace moves: a page renamed
+     * early on must still be discoverable as a backlink source for pages that are moved
+     * later. Re-indexing from disk instead would lose this, because the destination page
+     * has usually not been written to disk yet when this method is called.
+     *
+     * @param string $oldpage The old page name
+     * @param string $newpage The new page name
+     *
+     * @return bool true if the page was renamed, false if there was nothing to do
+     * @throws IndexAccessException
+     * @throws IndexLockException
+     * @throws IndexWriteException
+     */
+    public function renamePage(string $oldpage, string $newpage): bool
+    {
+        if ($oldpage === $newpage) return false;
+
+        $pageIndex = new FileIndex('page', '', true);
+
+        // locate the existing entity rows; stop as soon as both are known
+        $oldId = null;
+        $newId = null;
+        foreach ($pageIndex as $rid => $value) {
+            if ($value === $oldpage) $oldId = $rid;
+            if ($value === $newpage) $newId = $rid;
+            if ($oldId !== null && $newId !== null) break;
+        }
+
+        // nothing to rename if the old page was never indexed
+        if ($oldId === null) {
+            $pageIndex->unlock();
+            $this->log("Indexer: $oldpage is not in the index, nothing to rename");
+            return false;
+        }
+
+        // If the new name already has its own entity, drop its indexed data first.
+        // deletePage() intentionally keeps the entity row in page.idx, so we additionally
+        // blank that row - an empty entry is the index's "removed" marker (see getAllPages()).
+        // Otherwise two rows would carry the new name and a lookup could resolve to the
+        // now-empty one instead of the renamed entity that holds the data.
+        if ($newId !== null) {
+            $this->deletePage($newpage, true);
+            $pageIndex->changeRow($newId, '');
+        }
+
+        // rename in place — keeps the entity ID and thus all index associations
+        $pageIndex->changeRow($oldId, $newpage);
+
+        $pageIndex->unlock();
+        $this->log("Indexer: renamed $oldpage to $newpage in index");
+        return true;
+    }
+
+    /**
+     * Clear all page indexes
+     */
+    public function clear(): void
+    {
+        global $conf;
+
+        Lock::acquire('page');
+
+        // clear metadata indexes
+        foreach ($this->getMetadataRegistryKeys() as $key) {
+            $clean = PageMetaCollection::cleanName($key);
+            @unlink($conf['indexdir'] . '/' . $clean . '_w.idx');
+            @unlink($conf['indexdir'] . '/' . $clean . '_i.idx');
+            @unlink($conf['indexdir'] . '/' . $clean . '_p.idx');
+        }
+
+        // clear fulltext indexes
+        $files = glob($conf['indexdir'] . '/i*.idx');
+        if ($files) foreach ($files as $f) @unlink($f);
+        $files = glob($conf['indexdir'] . '/w*.idx');
+        if ($files) foreach ($files as $f) @unlink($f);
+
+        @unlink($conf['indexdir'] . '/pageword.idx');
+        @unlink($conf['indexdir'] . '/lengths.idx');
+
+        // clear title and page indexes
+        @unlink($conf['indexdir'] . '/title.idx');
+        @unlink($conf['indexdir'] . '/page.idx');
+        @unlink($conf['indexdir'] . '/metadata.idx');
+
+        Lock::release('page');
+    }
+
+    /**
+     * Check the structural integrity of all search indexes
+     *
+     * @throws IndexIntegrityException when a structural inconsistency is found
+     */
+    public function checkIntegrity(): void
+    {
+        (new PageFulltextCollection())->checkIntegrity();
+        (new PageTitleCollection())->checkIntegrity();
+
+        foreach ($this->getMetadataRegistryKeys() as $key) {
+            (new PageMetaCollection($key))->checkIntegrity();
+        }
+    }
+
+    /**
+     * Whether the search index is empty (no fulltext data indexed yet)
+     *
+     * @return bool
+     */
+    public function isIndexEmpty(): bool
+    {
+        return (new PageFulltextCollection())->getTokenIndexMaximum() === 0;
+    }
+
+    /**
+     * Get the list of known metadata keys from the metadata registry
+     *
+     * @return string[] list of metadata key names
+     */
+    protected function getMetadataRegistryKeys(): array
+    {
+        global $conf;
+        $fn = $conf['indexdir'] . '/metadata.idx';
+        if (!file_exists($fn)) return [];
+        $keys = file($fn, FILE_IGNORE_NEW_LINES);
+        return $keys ?: [];
+    }
+
+    /**
+     * Update the metadata registry with new keys
+     *
+     * The read-modify-write of the registry file is guarded by a lock so that
+     * concurrent indexing of pages carrying different new metadata keys cannot
+     * drop a key: without the lock two processes could read the same registry,
+     * each append a different key, and the later writer would clobber the other.
+     *
+     * @param string[] $keys metadata key names to ensure are registered
+     *
+     * @throws IndexLockException when the registry lock cannot be acquired
+     *
+     * @internal Only marked public for access via LegacyIndexer
+     */
+    public function updateMetadataRegistry(array $keys): void
+    {
+        global $conf;
+        $fn = $conf['indexdir'] . '/metadata.idx';
+
+        Lock::acquire('metadata');
+        try {
+            $existing = file_exists($fn) ? file($fn, FILE_IGNORE_NEW_LINES) : [];
+            if (!$existing) $existing = [];
+
+            $added = false;
+            foreach ($keys as $key) {
+                if (!in_array($key, $existing)) {
+                    $existing[] = $key;
+                    $added = true;
+                }
+            }
+
+            if ($added) {
+                io_saveFile($fn, implode("\n", $existing) . "\n");
+            }
+        } finally {
+            Lock::release('metadata');
+        }
+    }
+
+    /**
+     * Return a list of all indexed pages, optionally filtered by metadata key
+     *
+     * Kept on Indexer (not just LegacyIndexer) because several plugins call it
+     * directly on `new Indexer()` instances rather than going through
+     * idx_get_indexer().
+     *
+     * @param string|null $key metadata key name
+     * @return string[]
+     *
+     * @deprecated 2026-04-07 use MetadataSearch::getPages() or Indexer::getAllPages() instead
+     */
+    public function getPages($key = null)
+    {
+        DebugHelper::dbgDeprecatedFunction(MetadataSearch::class . '::getPages()');
+        return (new MetadataSearch())->getPages($key);
+    }
+}

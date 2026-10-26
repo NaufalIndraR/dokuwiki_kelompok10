@@ -1,0 +1,117 @@
+<?php
+
+/**
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ *
+ * @author Fekete Ádám Zsolt <fadam@egbcsoport.hu>
+ * @author Marton Sebok <sebokmarton@gmail.com>
+ */
+$lang['menu']                  = 'Bővítménykezelő';
+$lang['tab_plugins']           = 'Telepített modulok';
+$lang['tab_templates']         = 'Telepített sablonok';
+$lang['tab_search']            = 'Keresés és telepítés';
+$lang['tab_install']           = 'Kézi telepítés';
+$lang['notimplemented']        = 'Ez a funkció még nincs implementálva';
+$lang['pluginlistsaveerror']   = 'Hiba történt a modulok listájának mentésekor';
+$lang['unknownauthor']         = 'Ismeretlen szerző';
+$lang['unknownversion']        = 'Ismeretlen verzió';
+$lang['btn_info']              = 'További információk megjelenítése';
+$lang['btn_update']            = 'Frissítés';
+$lang['btn_uninstall']         = 'Törlés';
+$lang['btn_enable']            = 'Engedélyezés';
+$lang['btn_disable']           = 'Letiltás';
+$lang['btn_install']           = 'Telepítés';
+$lang['btn_reinstall']         = 'Újratelepítés';
+$lang['js']['reallydel']       = 'Biztosan törlöd ezt a bővítményt?';
+$lang['js']['display_viewoptions'] = 'Nézet beállításai:';
+$lang['js']['display_enabled'] = 'engedélyezve';
+$lang['js']['display_disabled'] = 'letiltva';
+$lang['js']['display_updatable'] = 'frissíthető';
+$lang['js']['close']           = 'Kattints a bezáráshoz';
+$lang['js']['filter']          = 'Csak frissíthető bővítmények mutatása';
+$lang['search_for']            = 'Bővítmények keresése:';
+$lang['search']                = 'Keresés';
+$lang['extensionby']           = '<strong>%s</strong>, %s szerzőtől';
+$lang['screenshot']            = '%s képernyőképe';
+$lang['popularity']            = 'Népszerűség: %s%%';
+$lang['homepage_link']         = 'Dokumentáció';
+$lang['bugs_features']         = 'Hibák';
+$lang['tags']                  = 'Címkék:';
+$lang['author_hint']           = 'Bővítmények keresése ettől a szerzőtől';
+$lang['installed']             = 'Telepítve:';
+$lang['downloadurl']           = 'Csomag URL:';
+$lang['repository']            = 'Repository:';
+$lang['unknown']               = '<em>ismeretlen</em>';
+$lang['installed_version']     = 'Telepített verzió:';
+$lang['install_date']          = 'Utoljára frissítve:';
+$lang['available_version']     = 'Elérhető verzió:';
+$lang['compatible']            = 'Kompatibilis rendszerek:';
+$lang['depends']               = 'Függőségek:';
+$lang['similar']               = 'Hasonló bővítmények:';
+$lang['conflicts']             = 'Ütközést okozó bővítmények:';
+$lang['donate']                = 'Tetszik?';
+$lang['donate_action']         = 'Hívd meg a szerzőjét egy kávéra!';
+$lang['repo_retry']            = 'Újra';
+$lang['provides']              = 'Szolgáltatások:';
+$lang['status']                = 'Állapot:';
+$lang['status_installed']      = 'telepítve';
+$lang['status_not_installed']  = 'nincs telepítve';
+$lang['status_protected']      = 'védett';
+$lang['status_enabled']        = 'engedélyezve';
+$lang['status_disabled']       = 'letiltva';
+$lang['status_unmodifiable']   = 'nem lehet módosítani';
+$lang['status_plugin']         = 'modul';
+$lang['status_template']       = 'sablon';
+$lang['status_bundled']        = 'beépített';
+$lang['msg_enabled']           = 'A(z) %s modul engedélyezve';
+$lang['msg_disabled']          = 'A(z) %s modul letiltva';
+$lang['msg_delete_success']    = 'A bővítmény %s törölve';
+$lang['msg_delete_failed']     = 'A(z) %s bővítmény eltávolítása sikertelen';
+$lang['msg_install_success']   = 'A(z) %s bővítmény sikeresen telepítve';
+$lang['msg_update_success']    = 'A(z) %s bővítmény sikeresen frissítve';
+$lang['msg_upload_failed']     = 'A fájl feltöltése sikertelen';
+$lang['msg_nooverwrite']       = 'A % bővítmény már létezik, így nem írtuk felül. A felülíráshoz jelöld be a jelölőnégyzetet.';
+$lang['missing_dependency']    = 'Hiányzó vagy letiltott függőség: %s';
+$lang['found_conflict']        = 'Ez a bővítmény a beállításai alapján ütközik az alábbi telepített bővítményekkel: %s';
+$lang['security_issue']        = 'Biztonsági probléma: %s';
+$lang['security_warning']      = 'Biztonsági figyelmeztetés: %s';
+$lang['update_message']        = 'Frissítési üzenet: %s';
+$lang['wrong_folder']          = 'A modul telepítése sikertelen: Nevezd át a modul könyvtárát "%s" névről "%s" névre!';
+$lang['url_change']            = 'Az URL megváltozott: A csomag URL-je megváltozott az utolsó letöltés óta. A bővítmény frissítése előtt ellenőrizd az új URL helyességét!
+Új: %s
+Régi: %s';
+$lang['error_badurl']          = 'Az URL-nek "http"-vel vagy "https"-sel kell kezdődnie';
+$lang['error_dircreate']       = 'A letöltéshez az ideiglenes könyvtár létrehozása sikertelen';
+$lang['error_download']        = 'A(z) %s fájl letöltése sikertelen';
+$lang['error_decompress']      = 'A letöltött fájlt nem lehet kicsomagolni. Ezt okozhatja a fájl sérülése (ebben az esetben próbáld újra letölteni) vagy egy ismeretlen tömörítési formátum használata (ilyenkor kézzel kell telepítened).';
+$lang['error_findfolder']      = 'A bővítményhez tartozó könyvtárat nem sikerült megállapítani, kézzel kell letöltened és telepítened';
+$lang['error_copy']            = 'Egy fájl másolása közben hiba történt a <em>%s</em> könyvtárban: lehet, hogy a lemez megtelt vagy nincsenek megfelelő írási jogaid. A telepítés megszakadása a modul hibás működését eredményezheti és instabil állapotba hozhatja a wikit';
+$lang['error_copy_read']       = 'Nem sikerült a %s mappa olvasása';
+$lang['error_copy_mkdir']      = 'Nem sikerült létrehozni a %s mappát';
+$lang['error_copy_copy']       = 'Nem sikerült átmásolni a ezt: %s ide: %s';
+$lang['error_archive_read']    = 'Nem sikerült megnyitni a %s archívumot olvasásra';
+$lang['error_archive_extract'] = 'Nem sikerült kicsomagolni a %s archívmuot: %s';
+$lang['error_uninstall_protected'] = 'A %s bővítmény védett, nem lehet eltávolítani';
+$lang['error_uninstall_dependants'] = 'A %s bővítmény továbbra is szükséges a %s működéséhez, így nem lehet eltávolítani';
+$lang['error_disable_protected'] = 'A %s bővítmény védett, nem lehet kikapcsolni';
+$lang['error_disable_dependants'] = 'A %s bővítmény továbbra is szükséges a %s működéséhez, így nem lehet kikapcsolni';
+$lang['error_nourl']           = 'A %s bővítményhez nem található letöltési URL';
+$lang['error_notinstalled']    = 'A%s bővítmény nincs telepítve';
+$lang['error_alreadyenabled']  = 'A %s bővítmény már be van kapcsolva';
+$lang['error_alreadydisabled'] = 'A %s bővítmény már ki van kapcsolva';
+$lang['error_minphp']          = 'A %s bővítménynek minimum %s PHP verzióra van szüksége, de ez a wiki a %s PHP verzión fut.';
+$lang['error_maxphp']          = 'A %s bővítmény csak a %s PHP verzióig támogatott, de ez a wiki %s PHP verzión fut.';
+$lang['noperms']               = 'A bővítmény könyvtára nem írható';
+$lang['notplperms']            = 'A sablon könyvtára nem írható';
+$lang['nopluginperms']         = 'A modul könyvtára nem írható';
+$lang['git']                   = 'Ezt a bővítményt git-tel telepítették, lehet, hogy nem itt célszerű frissíteni';
+$lang['auth']                  = 'Ez az autentikációs modul nincs engedélyezve a beállításokban, érdemes lehet letiltani.';
+$lang['install_url']           = 'Telepítés erről az URL-ről:';
+$lang['install_upload']        = 'Bővítmény feltöltése:';
+$lang['repo_badresponse']      = 'A bővítmény gyűjtemény hibás választ küldött.';
+$lang['repo_error']            = 'A modul repository-ja nem érhető el. Bizonyosodj meg róla, hogy a szervereden engedélyezett a www.dokuwiki.org cím elérése és ellenőrizd a proxy beállításaidat!';
+$lang['nossl']                 = 'Úgy tűnik, a PHP konfigurációd nem támogatja az SSL-t. Néhány DokuWiki bővítmény letöltése sikertelen lehet.';
+$lang['popularity_high']       = 'Ez az egyik legnépszerűbb bővítmény';
+$lang['popularity_medium']     = 'Ez a bővítmény viszonylag népszerű';
+$lang['popularity_low']        = 'Ez iránt a bővítmény iránt van némi érdeklődés';
+$lang['details']               = 'Részletek';
