@@ -263,30 +263,9 @@ Skrip ini mengarsipkan folder `data`, `conf`, `lib/plugins`, dan `lib/tpl` dari 
 
 ---
 
-<<<<<<< HEAD
 ## 6. Cara Pemakaian
 
 Bagian ini menjelaskan fitur utama DokuWiki sesuai konfigurasi pada repositori ini. Bahasa antarmuka diatur ke bahasa Indonesia (`conf/local.php`), jadi nama tombol dan menu bisa sedikit berbeda dari istilah yang dipakai di sini.
-=======
-## 6. Pembahasan
-
-### DokuWiki
-
-### Kelebihan:
-* **Tidak butuh database:** DokuWiki menyimpan semua halaman sebagai file teks biasa (.txt) di folder data.
-* **Konsumsi memori rendah:** Konsumsi RAM di bawah 64 MB, lebih kecil dibandingkan kedua aplikasi pembanding sejenis yaitu, MediaWiki dan BookStack.
-* **Backup mudah:** Seluruh isi wiki berada pada satu folder, untuk mencadangkannya cukup mengarsipkan folder (tar).
-* **Riwayat revisi dan rollback:** Setiap perubahan pada halaman dicatat, versi lama dan sekarang dapat dibandingkan, pemulihan (rollback) dapat dilakukan yaitu, mengembalikan halaman ke versi sebelumnya.
-* **Kontrol akses berjenjang (ACL):** Izin dapat diatur per pengguna untuk suatu namespace, meliputi read, create, upload, delete.
-  
-### Kekurangan:
-* **Skalabilitas terbatas:** Pencarian dan pengindeksan dilakukan langsung pada file, jika pengguna sudah sangat banyak, pencarian akan semakin lambat dibanding sistem yang menggunakan database.
-* **Pencarian dan pengelolaan data:** Tanpa database, tidak bisa menjalankan query yang rumit, misalnya filtering halaman berdasarkan beberapa kondisi sekaligus.
-* **Struktur organisasi kurang formal:** DokuWiki menggunakan namespace untuk mengelompokkan halaman seperti folder (fleksibel), berbeda dengan BookStack yang mempunyai hierarki tetap yang membuat struktur dokumentasi lebih seragam.
-* **Tidak ada editor WYSIWYG bawaan:** Editor bawaan berbasis markup, sintaks perlu dipelajari terlebih dahulu oleh pengguna.
-
-Perbandingan dengan Aplikasi Sejenis
->>>>>>> 20e663e476fc44676dcc3d5e736b2096221e14a3
 
 ### 1. Membuka wiki
 
