@@ -296,7 +296,7 @@ Basis pengetahuan yang telah dimasukkan ke dalam DokuWiki bertema **Pusat Dokume
 
 ## 6. Pembahasan
 
-DokuWiki
+### DokuWiki
 
 ### Kelebihan:
 * **Tidak butuh database:** DokuWiki menyimpan semua halaman sebagai file teks biasa (.txt) di folder data.
@@ -310,6 +310,7 @@ DokuWiki
 * **Pencarian dan pengelolaan data:** Tanpa database, tidak bisa menjalankan query yang rumit, misalnya filtering halaman berdasarkan beberapa kondisi sekaligus.
 * **Struktur organisasi kurang formal:** DokuWiki menggunakan namespace untuk mengelompokkan halaman seperti folder (fleksibel), berbeda dengan BookStack yang mempunyai hierarki tetap yang membuat struktur dokumentasi lebih seragam.
 * **Tidak ada editor WYSIWYG bawaan:** Editor bawaan berbasis markup, sintaks perlu dipelajari terlebih dahulu oleh pengguna.
+
 
 Perbandingan dengan Aplikasi Sejenis
 
