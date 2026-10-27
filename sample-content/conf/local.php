@@ -4,7 +4,7 @@
  * Auto-generated configuration for Kelompok 10 KDJK IPB
  */
 
-$conf['title'] = 'Knowledge Base Lab Komdat — Kelompok 10';
+$conf['title'] = 'dokuwiki - kelompok 10';
 $conf['lang'] = 'id';
 $conf['license'] = 'cc-by-sa';
 $conf['useacl'] = 1;
