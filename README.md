@@ -1,6 +1,7 @@
 # Aplikasi Web DokuWiki
 
-Tugas Proyek Aplikasi Web Self-Hosted — Praktikum Komunikasi Data dan Jaringan Komputer (KDJK)  
+Tugas Proyek Aplikasi Web Self-Hosted
+Praktikum Komunikasi Data dan Jaringan Komputer (KDJK)  
 Departemen Ilmu Komputer, IPB University
 
 ### Kelompok 10
